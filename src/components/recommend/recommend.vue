@@ -1,11 +1,35 @@
 <template>
-	<div class="recommend">推荐页面</div>
+	<div class="recommend">
+		<div v-for="item in recommends">
+			<img :src="item.picUrl">
+		</div>
+	</div>
 
 </template>
 
 <script type="text/ecmascript-6">
-	
-	export default {}
+	import {getRecommend} from 'api/recommend'
+	import {ERR_OK} from 'api/config'
+
+	export default {
+		data () {
+			return {
+				recommends: []
+			}
+		},
+		created() {
+			this._getRecommend()
+		},
+		methods: {
+			_getRecommend() {
+				getRecommend().then((res) => {
+					if (res.code === ERR_OK) {
+						this.recommends = res.data.slider
+					}
+				})
+			}
+		}
+	}
 
 </script>
 

@@ -8,7 +8,8 @@ import search from 'components/search/search'
 Vue.use(Router)
 
 export default new Router({
-    mode: 'history',
+    'linkActiveClass': 'active', //修改默认样式名
+    mode: 'history', //HTML5 History 模式，去掉URL中的“#”号
     routes: [
         {
             path: '/',

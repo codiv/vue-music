@@ -35,7 +35,7 @@
 			.tab-link
 				padding-bottom: 5px
 				color: $color-text-l
-			&.router-link-active
+			&.active
 				.tab-link
 					color: $color-theme
 					border-bottom: 2px solid $color-theme

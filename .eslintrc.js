@@ -26,6 +26,8 @@ module.exports = {
         'eol-last': 0, //不检测文件末尾空行
         'space-before-function-paren': 0,
         'indent': 0,
-        'no-tabs': 0
+        'no-tabs': 0,
+        'comma-spacing': 0,
+        'spaced-comment': 0
     }
 }
