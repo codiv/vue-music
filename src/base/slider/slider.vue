@@ -3,8 +3,11 @@
 		<div class="slider-group" ref="sliderGroup">
 			<slot></slot>
 		</div>
+		<div class="dots">
+			<span class="dot" v-for="(item, index) in dots" :class="{'active':currentPageIndex===index}"
+				  @click="toPage(index)"></span>
+		</div>
 	</div>
-
 </template>
 
 <script type="text/ecmascript-6">
@@ -14,7 +17,8 @@
 	export default {
 		data() {
 			return {
-				dots: []
+				dots: [],
+				currentPageIndex: 0
 			}
 		},
 		props: {
@@ -34,14 +38,13 @@
 		mounted() {
 			setTimeout(() => {
 				this._setSliderWidth()
+				this._initDots() //注：必须在_initSlider()方法之前执行，如果在之后并且snapLoop为true时候，children的值会多出两个
 				this._initSlider()
-				this._initDots()
 			}, 20)
 		},
 		methods: {
 			_setSliderWidth() {
 				this.children = this.$refs.sliderGroup.children
-				console.log(this.children.length)
 				let width = 0
 				let sliderWidth = this.$refs.slider.clientWidth
 				for (let i = 0; i < this.children.length; i++) {
@@ -51,7 +54,7 @@
 					width += sliderWidth
 				}
 				if (this.loop) {
-					width += sliderWidth * 2
+					width += sliderWidth * 2 //开启snapLoop之后，会在头尾各添加多一个children
 				}
 				this.$refs.sliderGroup.style.width = width + 'px'
 			},
@@ -61,14 +64,26 @@
 					scrollY: false,
 					momentum: false,
 					snap: true,
-					snapLoop: this.loop,
+					snapLoop: this.loop, //无缝循环开启之后，会在头尾各添加多children
 					snapThreshold: 0.3,
 					snapSpeed: 400
+				})
+
+				this.slider.on('scrollEnd', () => { //派发一个scrollEnd事件
+					let pageIndex = this.slider.currentPage.pageX
+					if (this.loop) {
+						pageIndex -= 1
+					}
+					this.currentPageIndex = pageIndex
 				})
 			},
 			_initDots() {
 				this.dots = new Array(this.children.length)
-				console.log(this.children.length)
+			},
+			toPage(index) {
+				let pageIndex = index + 1
+				this.slider.goToPage(pageIndex, 0, 400)
+				this.currentPageIndex = index
 			}
 		}
 	}
