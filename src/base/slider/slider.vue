@@ -81,7 +81,10 @@
 				this.dots = new Array(this.children.length)
 			},
 			toPage(index) {
-				let pageIndex = index + 1
+				let pageIndex = index
+				if (this.loop) {
+					pageIndex += 1
+				}
 				this.slider.goToPage(pageIndex, 0, 400)
 				this.currentPageIndex = index
 			}
