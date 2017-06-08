@@ -12,6 +12,11 @@
 	import BScroll from 'better-scroll'
 
 	export default {
+		data() {
+			return {
+				dots: []
+			}
+		},
 		props: {
 			loop: {
 				type: Boolean,
@@ -30,15 +35,17 @@
 			setTimeout(() => {
 				this._setSliderWidth()
 				this._initSlider()
+				this._initDots()
 			}, 20)
 		},
 		methods: {
 			_setSliderWidth() {
-				let children = this.$refs.sliderGroup.children
+				this.children = this.$refs.sliderGroup.children
+				console.log(this.children.length)
 				let width = 0
 				let sliderWidth = this.$refs.slider.clientWidth
-				for (let i = 0; i < children.length; i++) {
-					let child = children[i]
+				for (let i = 0; i < this.children.length; i++) {
+					let child = this.children[i]
 					addClass(child, 'slider-item')
 					child.style.width = sliderWidth + 'px'
 					width += sliderWidth
@@ -58,6 +65,10 @@
 					snapThreshold: 0.3,
 					snapSpeed: 400
 				})
+			},
+			_initDots() {
+				this.dots = new Array(this.children.length)
+				console.log(this.children.length)
 			}
 		}
 	}
