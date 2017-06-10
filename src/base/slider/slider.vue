@@ -69,7 +69,7 @@
 					snapSpeed: 400
 				})
 
-				this.slider.on('scrollEnd', () => { //派发一个scrollEnd事件
+				this.slider.on('scrollEnd', () => { //派发一个scrollEnd事件，scrollEnd：滚动结束时触发
 					let pageIndex = this.slider.currentPage.pageX
 					if (this.loop) {
 						pageIndex -= 1
