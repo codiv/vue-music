@@ -10,6 +10,9 @@
 					</div>
 				</slider>
 			</div>
+			<div class="recommend-list">
+
+			</div>
 		</div>
 	</div>
 
