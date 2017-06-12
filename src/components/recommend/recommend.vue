@@ -6,7 +6,8 @@
 					<slider>
 						<div v-for="item in recommends">
 							<a :href="item.linkUrl">
-								<img :src="item.picUrl" @load="imagesLoad">
+								<!--注：class="needsclick"解决fastclick插件无法点击问题-->
+								<img :src="item.picUrl" @load="imagesLoad" class="needsclick">
 							</a>
 						</div>
 					</slider>
