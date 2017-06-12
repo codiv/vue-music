@@ -105,7 +105,12 @@
 				if (this.loop) {
 					pageIndex += 1
 				}
+
 				this.slider.goToPage(pageIndex, 0, 400)
+				if (this.autoPlay) {
+					clearTimeout(this.timer)
+					this._play()
+				}
 			},
 			_play() {
 				let pageIndex = this.currentPageIndex + 1
