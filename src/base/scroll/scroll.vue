@@ -20,7 +20,7 @@
 			},
 			loadData: {
 				type: Array,
-				default: []
+				default: null
 			},
 			refreshDelay: {
 				type: Number,
