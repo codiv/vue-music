@@ -15,3 +15,12 @@ export function addClass(el, className) {
     el.className = newClass.join(' ')
 }
 
+export function getData(el, name, val) {
+    const prefix = 'data-'
+    //如果val有值则执行setAttribute设置属性与值
+    if (val) {
+        return el.setAttribute(prefix + name, val)
+    }
+    return el.getAttribute(prefix + name)
+}
+

@@ -1,7 +1,7 @@
 <template>
 	<scroll class="listview" :loadData="singer">
 		<ul>
-			<li v-for="group in singer" class="list-group">
+			<li v-for="group in singer" class="list-group" ref="listGroup">
 				<h2 class="list-group-title">{{group.title}}</h2>
 				<ul>
 					<li v-for="item in group.items" class="list-group-item">
@@ -11,11 +11,18 @@
 				</ul>
 			</li>
 		</ul>
+		<!--touchstart 触摸事件是better-scroll封闭的方法-->
+		<div class="list-shortcut" @touchstart="onShortcutTouchStart">
+			<ul>
+				<li v-for="(item,index) in shortcutList" class="item" :data-index="index">{{item}}</li>
+			</ul>
+		</div>
 	</scroll>
 </template>
 
 <script type="text/ecmascript-6">
 	import Scroll from 'base/scroll/scroll'
+	import {getData} from 'common/js/dom'
 
 	export default {
 		props: {
@@ -25,9 +32,36 @@
 			}
 		},
 		created() {
-			setTimeout(() => {
-//				console.log(this.singer)
-			}, 20)
+			this.touch = {}
+			this.listHeight = []
+		},
+		methods: {
+			onShortcutTouchStart(e) {
+				let anchorIndex = getData(e.target, 'index')
+				let firstTouch = e.touches[0]
+				this.touch.y1 = firstTouch.pageY
+				this.touch.anchorIndex = anchorIndex
+
+				console.log(this.touch)
+			},
+			_calculateHeight() {
+				this.listHeight = []
+				let list = this.$refs.listGroup
+				let height = 0
+				this.listHeight.push(height)
+				for (let i = 0; i < list.length; i++) {
+					let item = list[i]
+					height += item.clientHeight
+					this.listHeight.push(height)
+				}
+			}
+		},
+		computed: {
+			shortcutList() {
+				return this.singer.map((data) => { //map 遍历数据，支持return返回值
+					return data.title.substr(0, 1)
+				})
+			}
 		},
 		components: {
 			Scroll
