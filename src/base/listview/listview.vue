@@ -11,8 +11,11 @@
 				</ul>
 			</li>
 		</ul>
-		<!--touchstart 触摸事件是better-scroll封闭的方法-->
-		<div class="list-shortcut" @touchstart="onShortcutTouchStart">
+		<!--
+		touchstart：触摸事件是better-scroll封闭的方法
+		touchmove：手指移动事件，stop/prevent是阻止事件冒泡和浏览器的原生滚动
+		-->
+		<div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
 			<ul>
 				<li v-for="(item,index) in shortcutList" class="item" :data-index="index">{{item}}</li>
 			</ul>
@@ -23,6 +26,8 @@
 <script type="text/ecmascript-6">
 	import Scroll from 'base/scroll/scroll'
 	import {getData} from 'common/js/dom'
+
+	const ANCHOR_HEIGHT = 18 //字母元素的高
 
 	export default {
 		props: {
@@ -38,7 +43,36 @@
 		methods: {
 			onShortcutTouchStart(e) {
 				let anchorIndex = getData(e.target, 'index')
-				this.$refs.listview.scrollToElement(this.$refs.listGroup[anchorIndex], 400)
+				let firstTouch = e.touches[0]
+				this.touch.y1 = firstTouch.pageY // 触摸时的Y值坐标
+				this.touch.anchorIndex = anchorIndex
+				this._scrollTo(anchorIndex)
+			},
+			_calculateHeight() {
+				this.listHeight = []
+				let list = this.$refs.listGroup
+				let height = 0
+				this.listHeight.push(height)
+				for (let i = 0; i < list.length; i++) {
+					let item = list[i]
+					height += item.clientHeight
+					this.listHeight.push(height)
+				}
+			},
+			onShortcutTouchMove(e) {
+				let firstTouch = e.touches[0]
+				this.touch.y2 = firstTouch.pageY //移动时的Y值坐标
+				/*
+				 * delta：偏移的锚点数
+				 * this.touch.y2 - this.touch.y1：取得移动的差什
+				 * “ | 0”是向下取整
+				 * */
+				let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
+				let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+				this._scrollTo(anchorIndex)
+			},
+			_scrollTo(index) {
+				this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
 			}
 		},
 		computed: {
@@ -46,6 +80,13 @@
 				return this.singer.map((data) => { //map 遍历数据，支持return返回值
 					return data.title.substr(0, 1)
 				})
+			}
+		},
+		watch: {
+			singer() {
+				setTimeout(() => {
+					this._calculateHeight()
+				}, 20)
 			}
 		},
 		components: {
