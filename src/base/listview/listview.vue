@@ -1,5 +1,5 @@
 <template>
-	<scroll class="listview" :loadData="singer">
+	<scroll class="listview" :loadData="singer" ref="listview">
 		<ul>
 			<li v-for="group in singer" class="list-group" ref="listGroup">
 				<h2 class="list-group-title">{{group.title}}</h2>
@@ -38,22 +38,7 @@
 		methods: {
 			onShortcutTouchStart(e) {
 				let anchorIndex = getData(e.target, 'index')
-				let firstTouch = e.touches[0]
-				this.touch.y1 = firstTouch.pageY
-				this.touch.anchorIndex = anchorIndex
-
-				console.log(this.touch)
-			},
-			_calculateHeight() {
-				this.listHeight = []
-				let list = this.$refs.listGroup
-				let height = 0
-				this.listHeight.push(height)
-				for (let i = 0; i < list.length; i++) {
-					let item = list[i]
-					height += item.clientHeight
-					this.listHeight.push(height)
-				}
+				this.$refs.listview.scrollToElement(this.$refs.listGroup[anchorIndex], 400)
 			}
 		},
 		computed: {

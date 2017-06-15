@@ -56,6 +56,17 @@
 			},
 			refresh() {
 				this.scroll && this.scroll.refresh()
+			},
+			/*
+			 apply方法：
+			 语法：apply([thisObj[,argArray]])
+			 定义：应用某一对象的一个方法，用另一个对象替换当前对象。
+			 */
+			scrollTo() {
+				this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+			},
+			scrollToElement() {
+				this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
 			}
 		},
 		watch: {
