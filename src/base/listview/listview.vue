@@ -28,12 +28,19 @@
 				</li>
 			</ul>
 		</div>
+		<div class="list-fixed" v-show="fixedTitle">
+			<div class="fixed-title">{{fixedTitle}}</div>
+		</div>
+		<div class="loading-wrapper" v-show="!singer.length">
+			<loading></loading>
+		</div>
 	</scroll>
 </template>
 
 <script type="text/ecmascript-6">
 	import Scroll from 'base/scroll/scroll'
 	import {getData} from 'common/js/dom'
+	import Loading from 'base/loading/loading'
 
 	const ANCHOR_HEIGHT = 18 //字母元素的高
 
@@ -47,7 +54,8 @@
 		data() {
 			return {
 				scrollY: -1,
-				currentIndex: 0
+				currentIndex: 0,
+				diff: -1
 			}
 		},
 		created() {
@@ -99,7 +107,7 @@
 				} else if (index > this.listHeight.length - 2) {
 					index = this.listHeight.length - 2
 				}
-				this.scrollY = -this.listHeight[index]//滑动、点击时字母被选中的状态
+				this.scrollY = -this.listHeight[index] //滑动、点击时字母被选中的状态
 				this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
 			}
 		},
@@ -108,11 +116,18 @@
 				return this.singer.map((data) => { //map 遍历数据，支持return返回值
 					return data.title.substr(0, 1)
 				})
+			},
+			fixedTitle() {
+				if (this.currentIndex === 0) {
+					return
+				}
+				//先判断singer有没有值，因为初始值为空数组
+				return this.singer[this.currentIndex] ? this.singer[this.currentIndex].title : ''
 			}
 		},
 		watch: {
 			singer() { //singer数据变化的时候，更新一下_calculateHeight()
-				//setTimeout、20秒相当于nextTick，用setTimeout为了确保浏览器的兼容性
+				//setTimeout、20秒相当于nextTick，用setTimeout为了确保手机的兼容性
 				setTimeout(() => {
 					this._calculateHeight()
 				}, 20)
@@ -130,6 +145,7 @@
 					let height2 = listHeight[i + 1]
 					if (-newY >= height1 && -newY < height2) {
 						this.currentIndex = i
+						this.diff = i
 						return
 					}
 				}
@@ -138,7 +154,8 @@
 			}
 		},
 		components: {
-			Scroll
+			Scroll,
+			Loading
 		}
 	}
 
@@ -205,7 +222,7 @@
 				font-size: $font-size-small
 				color: $color-text-l
 				background: $color-highlight-background
-		.loading-container
+		.loading-wrapper
 			position: absolute
 			width: 100%
 			top: 50%
