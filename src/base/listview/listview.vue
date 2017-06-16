@@ -1,5 +1,11 @@
 <template>
-	<scroll class="listview" :loadData="singer" ref="listview">
+	<scroll class="listview"
+			:loadData="singer"
+			ref="listview"
+			@scroll="scroll"
+			:listenScroll="listenScroll"
+			:probe-type='probeType'
+	>
 		<ul>
 			<li v-for="group in singer" class="list-group" ref="listGroup">
 				<h2 class="list-group-title">{{group.title}}</h2>
@@ -17,7 +23,9 @@
 		-->
 		<div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
 			<ul>
-				<li v-for="(item,index) in shortcutList" class="item" :data-index="index">{{item}}</li>
+				<li v-for="(item,index) in shortcutList" class="item" :data-index="index"
+					:class="{'current':currentIndex===index}">{{item}}
+				</li>
 			</ul>
 		</div>
 	</scroll>
@@ -36,9 +44,17 @@
 				default: []
 			}
 		},
+		data() {
+			return {
+				scrollY: -1,
+				currentIndex: 0
+			}
+		},
 		created() {
 			this.touch = {}
 			this.listHeight = []
+			this.listenScroll = true
+			this.probeType = 3
 		},
 		methods: {
 			onShortcutTouchStart(e) {
@@ -47,17 +63,6 @@
 				this.touch.y1 = firstTouch.pageY // 触摸时的Y值坐标
 				this.touch.anchorIndex = anchorIndex
 				this._scrollTo(anchorIndex)
-			},
-			_calculateHeight() {
-				this.listHeight = []
-				let list = this.$refs.listGroup
-				let height = 0
-				this.listHeight.push(height)
-				for (let i = 0; i < list.length; i++) {
-					let item = list[i]
-					height += item.clientHeight
-					this.listHeight.push(height)
-				}
 			},
 			onShortcutTouchMove(e) {
 				let firstTouch = e.touches[0]
@@ -71,7 +76,30 @@
 				let anchorIndex = parseInt(this.touch.anchorIndex) + delta
 				this._scrollTo(anchorIndex)
 			},
+			scroll(pos) { //滚动的时候，取得滚动时Y轴的值。
+				this.scrollY = pos.y
+			},
+			_calculateHeight() {
+				this.listHeight = []
+				let list = this.$refs.listGroup
+				let height = 0
+				this.listHeight.push(height)
+				for (let i = 0; i < list.length; i++) {
+					let item = list[i]
+					height += item.clientHeight
+					this.listHeight.push(height)
+				}
+			},
 			_scrollTo(index) {
+				if (!index && index !== 0) {
+					return
+				}
+				if (index < 0) {
+					index = 0
+				} else if (index > this.listHeight.length - 2) {
+					index = this.listHeight.length - 2
+				}
+				this.scrollY = -this.listHeight[index]//滑动、点击时字母被选中的状态
 				this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
 			}
 		},
@@ -83,10 +111,30 @@
 			}
 		},
 		watch: {
-			singer() {
+			singer() { //singer数据变化的时候，更新一下_calculateHeight()
+				//setTimeout、20秒相当于nextTick，用setTimeout为了确保浏览器的兼容性
 				setTimeout(() => {
 					this._calculateHeight()
 				}, 20)
+			},
+			scrollY(newY) { //时时监测scrollY新值（newY）的变化
+				const listHeight = this.listHeight
+				// 当滚动到顶部，newY>0
+				if (newY > 0) {
+					this.currentIndex = 0
+					return
+				}
+				// 在中间部分滚动，listHeight.length为24，元素最大的下标为22
+				for (let i = 0; i < listHeight.length - 1; i++) {
+					let height1 = listHeight[i]
+					let height2 = listHeight[i + 1]
+					if (-newY >= height1 && -newY < height2) {
+						this.currentIndex = i
+						return
+					}
+				}
+				// 当滚动到底部，且-newY大于最后一个元素的上限
+				this.currentIndex = listHeight.length - 2
 			}
 		},
 		components: {

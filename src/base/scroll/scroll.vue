@@ -31,6 +31,10 @@
 			refreshDelay: {
 				type: Number,
 				default: 20
+			},
+			listenScroll: {
+				type: Boolean,
+				default: false
 			}
 		},
 		mounted() {
@@ -39,7 +43,7 @@
 			}, 20)
 		},
 		methods: {
-			_initScroll() {
+			_initScroll() { //初始化
 				if (!this.$refs.wrapper) {
 					return
 				}
@@ -47,6 +51,13 @@
 					probeType: this.probeType,
 					click: this.click
 				})
+
+				if (this.listenScroll) { //是否要监听滚动事件
+					let me = this
+					this.scroll.on('scroll', (pos) => {
+						me.$emit('scroll', pos)
+					})
+				}
 			},
 			disable() {
 				this.scroll && this.scroll.disable()
