@@ -28,7 +28,7 @@
 				</li>
 			</ul>
 		</div>
-		<div class="list-fixed" v-show="fixedTitle">
+		<div class="list-fixed" v-show="fixedTitle" ref="fixed">
 			<div class="fixed-title">{{fixedTitle}}</div>
 		</div>
 		<div class="loading-wrapper" v-show="!singer.length">
@@ -43,6 +43,7 @@
 	import Loading from 'base/loading/loading'
 
 	const ANCHOR_HEIGHT = 18 //字母元素的高
+	const TITLE_HEIGHT = 30 //title Div的高度
 
 	export default {
 		props: {
@@ -118,8 +119,8 @@
 				})
 			},
 			fixedTitle() {
-				if (this.currentIndex === 0) {
-					return
+				if (this.scrollY > 0) {
+					return ''
 				}
 				//先判断singer有没有值，因为初始值为空数组
 				return this.singer[this.currentIndex] ? this.singer[this.currentIndex].title : ''
@@ -145,12 +146,25 @@
 					let height2 = listHeight[i + 1]
 					if (-newY >= height1 && -newY < height2) {
 						this.currentIndex = i
-						this.diff = i
+						this.diff = height2 + newY
 						return
 					}
 				}
 				// 当滚动到底部，且-newY大于最后一个元素的上限
 				this.currentIndex = listHeight.length - 2
+			},
+			diff(newVal) {
+				let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+				/*
+				 * 优化Dom的操作，因为newVal是时时变化的，在条件不成立的时候，无需对Dom的操作。
+				 * 以下的代码相当于if...else...的条件判断
+				 * */
+				if (this.fixedTop === fixedTop) { //this.fixedTop 等于0的时候是远离title的时候
+					return
+				}
+				this.fixedTop = fixedTop //this.fixedTop 小于0的时候是与title重合的时候
+				//对Dom fixed的style操作
+				this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0`
 			}
 		},
 		components: {
