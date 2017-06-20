@@ -10,6 +10,7 @@
 	import {getSingerList} from 'api/singer'
 	import {ERR_OK} from 'api/config'
 	import Singer from 'common/js/singer'
+	import {mapMutations} from 'vuex'
 
 	const HOT_SINGER_LEN = 10
 	const HOT_NAME = '热门'
@@ -25,10 +26,10 @@
 		},
 		methods: {
 			selectSinger(item) {
-				console.log(item)
 				this.$router.push({
 					path: `/singer/${item.id}`
 				})
+				this.setSinger(item)
 			},
 			_getSingerList() {
 				getSingerList().then((res) => {
@@ -80,7 +81,10 @@
 					return a.title.charCodeAt(0) - b.title.charCodeAt(0)
 				})
 				return hot.concat(ret) //用于连接两个或多个数组
-			}
+			},
+			...mapMutations({
+				setSinger: 'SET_SINGER' //跟store/mutations-types.js	里的SET_SINGER映射
+			})
 		},
 		components: {
 			listview
