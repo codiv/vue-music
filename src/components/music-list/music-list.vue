@@ -4,8 +4,8 @@
 			<i class="icon-back"></i>
 		</div>
 		<h1 class="title" v-html="title"></h1>
-		<div class="bg-images" :style="bgStyle"></div>
-		<scroll :loadData="songs" class="list">
+		<div class="bg-images" :style="bgStyle" ref="bgImage"></div>
+		<scroll :loadData="songs" class="list" ref="list">
 			<div class="song-list-wrapper">
 				<song-list :songs="songs"></song-list>
 			</div>
@@ -36,13 +36,13 @@
 				default: ''
 			}
 		},
-		created() {
-//			console.log(this.songs)
-		},
 		methods: {
 			back() {
 				this.$router.back()
 			}
+		},
+		mounted() {
+			this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
 		},
 		computed: {
 			bgStyle() {
