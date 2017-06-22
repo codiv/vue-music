@@ -9,7 +9,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-	
+
 	export default {
 		props: {
 			songs: {
@@ -31,7 +31,7 @@
 			}
 		},
 		created() {
-			console.log(this.bgImage)
+//			console.log(this.bgImage)
 		},
 		computed: {
 			bgStyle() {
