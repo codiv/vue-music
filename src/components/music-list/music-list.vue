@@ -5,10 +5,21 @@
 		</div>
 		<h1 class="title" v-html="title"></h1>
 		<div class="bg-images" :style="bgStyle"></div>
+		<scroll :loadData="songs" class="list">
+			<div class="song-list-wrapper">
+				<song-list :songs="songs"></song-list>
+			</div>
+			<div class="loading-wrapper" v-show="!songs.length">
+				<loading></loading>
+			</div>
+		</scroll>
 	</div>
 </template>
 
 <script type="text/ecmascript-6">
+	import scroll from 'base/scroll/scroll'
+	import Loading from 'base/loading/loading'
+	import SongList from 'base/song-list/song-list'
 
 	export default {
 		props: {
@@ -25,18 +36,23 @@
 				default: ''
 			}
 		},
+		created() {
+//			console.log(this.songs)
+		},
 		methods: {
 			back() {
 				this.$router.back()
 			}
 		},
-		created() {
-//			console.log(this.bgImage)
-		},
 		computed: {
 			bgStyle() {
 				return `background-image:url(${this.bgImage})`
 			}
+		},
+		components: {
+			scroll,
+			SongList,
+			Loading
 		}
 	}
 
@@ -81,4 +97,17 @@
 			padding-top: 70%
 			transform-origin: top
 			background-size: cover
+		.list
+			position: fixed
+			top: 0
+			bottom: 0
+			width: 100%
+			background-color: $color-background
+			.song-list-wrapper
+				padding: 20px 30px
+			.loading-wrapper
+				position: absolute
+				top: 50%
+				transform: translateY(-50%)
+				width: 100%
 </style>
