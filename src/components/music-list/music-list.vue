@@ -51,7 +51,7 @@
 		},
 		mounted() {
 			this.imageHeight = this.$refs.bgImage.clientHeight //图片的高度
-			this.minTranslateY = this.imageHeight - RESERVED_HEIGHT //translateY滚动最大高度
+			this.minTranslateY = this.imageHeight - RESERVED_HEIGHT //translateY最大滚动高度
 			this.$refs.list.$el.style['top'] = `${this.imageHeight}px`
 		},
 		methods: {
