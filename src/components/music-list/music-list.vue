@@ -5,7 +5,9 @@
 		</div>
 		<h1 class="title" v-html="title"></h1>
 		<div class="bg-images" :style="bgStyle" ref="bgImage"></div>
-		<scroll :loadData="songs" class="list" ref="list">
+		<div class="bg-layer" ref="layer"></div>
+		<scroll :loadData="songs" :probeType="probeType" :listenScroll="listenScroll" @scroll="scroll" class="list"
+				ref="list">
 			<div class="song-list-wrapper">
 				<song-list :songs="songs"></song-list>
 			</div>
@@ -20,6 +22,8 @@
 	import scroll from 'base/scroll/scroll'
 	import Loading from 'base/loading/loading'
 	import SongList from 'base/song-list/song-list'
+
+	const RESERVED_HEIGHT = 40
 
 	export default {
 		props: {
@@ -36,13 +40,39 @@
 				default: ''
 			}
 		},
+		data() {
+			return {
+				scrollY: 0
+			}
+		},
+		created() {
+			this.probeType = 3
+			this.listenScroll = true
+		},
+		mounted() {
+			this.imageHeight = this.$refs.bgImage.clientHeight //图片的高度
+			this.minTranslateY = this.imageHeight - RESERVED_HEIGHT //translateY滚动最大高度
+			this.$refs.list.$el.style['top'] = `${this.imageHeight}px`
+		},
 		methods: {
 			back() {
 				this.$router.back()
+			},
+			scroll(pos) {
+				this.scrollY = pos.y
 			}
 		},
-		mounted() {
-			this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
+		watch: {
+			scrollY(newY) {
+				/*
+				 * Math.max()返回两个指定的数中带有较大的值的那个数
+				 * translateY 滚动不能超过this.imageHeight（图像）的最大高度
+				 * 向上滚动则this.minTranslateY、newY为负值
+				 */
+				let translateY = Math.max(-this.minTranslateY, newY)
+				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
+				this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+			}
 		},
 		computed: {
 			bgStyle() {
@@ -97,6 +127,10 @@
 			padding-top: 70%
 			transform-origin: top
 			background-size: cover
+		.bg-layer
+			position: relative
+			height: 100%
+			background-color: $color-background
 		.list
 			position: fixed
 			top: 0
