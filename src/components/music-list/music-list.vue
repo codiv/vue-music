@@ -4,7 +4,9 @@
 			<i class="icon-back"></i>
 		</div>
 		<h1 class="title" v-html="title"></h1>
-		<div class="bg-images" :style="bgStyle" ref="bgImage"></div>
+		<div class="bg-images" :style="bgStyle" ref="bgImage">
+			<div class="filter" ref="filter"></div>
+		</div>
 		<div class="bg-layer" ref="layer"></div>
 		<scroll :loadData="songs" :probeType="probeType" :listenScroll="listenScroll" @scroll="scroll" class="list"
 				ref="list">
@@ -72,6 +74,7 @@
 				let translateY = Math.max(-this.minTranslateY, newY)
 				let zIndex = 0
 				let scale = 1
+				let blur = 0
 				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
 				this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
 				/*
@@ -87,7 +90,7 @@
 					this.$refs.bgImage.style.height = 0
 				}
 				/*
-				 * 向下拉的时候
+				 * 向下拉的时候，原理：图片的高度添加了newY的高度
 				 * Math.abs() 取绝对值
 				 * scale 向下的比例
 				 * */
@@ -98,7 +101,14 @@
 				}
 				this.$refs.bgImage.style['transform'] = `scale(${scale})`
 				this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
-
+				/*
+				 *向上滚动实现高斯模糊（只支持iOS）
+				 * */
+				if (newY < 0) {
+					blur = Math.min(20, percent * 20)
+				}
+				this.$refs.filter.style['backdrop-filter'] = `blur(${blur}px)`
+				this.$refs.filter.style['webkitBackdrop-filter'] = `blur(${blur}px)`
 				//向上滚动与向下拉时，bgImage的z-index的状态
 				this.$refs.bgImage.style.zIndex = zIndex
 			}
