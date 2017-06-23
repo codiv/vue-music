@@ -68,10 +68,24 @@
 				 * Math.max()返回两个指定的数中带有较大的值的那个数
 				 * translateY 滚动不能超过this.imageHeight（图像）的最大高度
 				 * 向上滚动则this.minTranslateY、newY为负值
-				 */
+				 * */
 				let translateY = Math.max(-this.minTranslateY, newY)
+				let zIndex = 0
 				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
 				this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+				/*
+				 * 滚动到顶部：z-index=10，padding-top=0，height=40(图像的高)
+				  * 滚动非顶部（CSS默认时）：z-index=0，padding-top=70%，height=0
+				 * */
+				if (newY < -this.minTranslateY) {
+					zIndex = 10
+					this.$refs.bgImage.style.paddingTop = 0
+					this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+				} else {
+					this.$refs.bgImage.style.paddingTop = '70%'
+					this.$refs.bgImage.style.height = 0
+				}
+				this.$refs.bgImage.style.zIndex = zIndex
 			}
 		},
 		computed: {
