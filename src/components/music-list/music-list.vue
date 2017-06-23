@@ -24,8 +24,11 @@
 	import scroll from 'base/scroll/scroll'
 	import Loading from 'base/loading/loading'
 	import SongList from 'base/song-list/song-list'
+	import {prefixStyle} from 'common/js/dom'
 
 	const RESERVED_HEIGHT = 40
+	const transform = prefixStyle('transform')
+	const backdrop = prefixStyle('backdrop')
 
 	export default {
 		props: {
@@ -75,8 +78,7 @@
 				let zIndex = 0
 				let scale = 1
 				let blur = 0
-				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
-				this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+				this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
 				/*
 				 * 滚动到顶部：z-index=10，padding-top=0，height=40(图像的高)
 				 * 滚动非顶部（CSS默认时）：z-index=0，padding-top=70%，height=0
@@ -99,16 +101,14 @@
 					scale = 1 + percent
 					zIndex = 10
 				}
-				this.$refs.bgImage.style['transform'] = `scale(${scale})`
-				this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
+				this.$refs.bgImage.style[transform] = `scale(${scale})`
 				/*
 				 *向上滚动实现高斯模糊（只支持iOS）
 				 * */
 				if (newY < 0) {
 					blur = Math.min(20, percent * 20)
 				}
-				this.$refs.filter.style['backdrop-filter'] = `blur(${blur}px)`
-				this.$refs.filter.style['webkitBackdrop-filter'] = `blur(${blur}px)`
+				this.$refs.filter.style[backdrop] = `blur(${blur}px)`
 				//向上滚动与向下拉时，bgImage的z-index的状态
 				this.$refs.bgImage.style.zIndex = zIndex
 			}
