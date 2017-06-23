@@ -71,11 +71,12 @@
 				 * */
 				let translateY = Math.max(-this.minTranslateY, newY)
 				let zIndex = 0
+				let scale = 1
 				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
 				this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
 				/*
 				 * 滚动到顶部：z-index=10，padding-top=0，height=40(图像的高)
-				  * 滚动非顶部（CSS默认时）：z-index=0，padding-top=70%，height=0
+				 * 滚动非顶部（CSS默认时）：z-index=0，padding-top=70%，height=0
 				 * */
 				if (newY < -this.minTranslateY) {
 					zIndex = 10
@@ -85,6 +86,20 @@
 					this.$refs.bgImage.style.paddingTop = '70%'
 					this.$refs.bgImage.style.height = 0
 				}
+				/*
+				 * 向下拉的时候
+				 * Math.abs() 取绝对值
+				 * scale 向下的比例
+				 * */
+				const percent = Math.abs(newY / -this.minTranslateY)
+				if (newY > 0) {
+					scale = 1 + percent
+					zIndex = 10
+				}
+				this.$refs.bgImage.style['transform'] = `scale(${scale})`
+				this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
+
+				//向上滚动与向下拉时，bgImage的z-index的状态
 				this.$refs.bgImage.style.zIndex = zIndex
 			}
 		},
