@@ -17,7 +17,7 @@
 		<scroll :loadData="songs" :probeType="probeType" :listenScroll="listenScroll" @scroll="scroll" class="list"
 				ref="list">
 			<div class="song-list-wrapper">
-				<song-list :songs="songs"></song-list>
+				<song-list :songs="songs" @select="selectItem"></song-list>
 			</div>
 			<div class="loading-wrapper" v-show="!songs.length">
 				<loading></loading>
@@ -31,6 +31,7 @@
 	import Loading from 'base/loading/loading'
 	import SongList from 'base/song-list/song-list'
 	import {prefixStyle} from 'common/js/dom'
+	import {mapActions} from 'vuex'
 
 	const RESERVED_HEIGHT = 40
 	const transform = prefixStyle('transform')
@@ -71,7 +72,17 @@
 			},
 			scroll(pos) {
 				this.scrollY = pos.y
-			}
+			},
+			selectItem(item, index) {
+				//item是只单首歌曲，传过来不一定要使用
+				this.selectPlay({
+					list: this.songs, //因为是播放整个列表所以把事个songs传过去，而不是单首歌
+					index
+				})
+			},
+			...mapActions([
+				'selectPlay'
+			])
 		},
 		watch: {
 			scrollY(newY) {

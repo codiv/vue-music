@@ -1,5 +1,12 @@
 /**
- * 获取data的映射操作（代理、计算）
+ * 作用：获取data的映射操作（代理、计算）
+ * 使用：
+ * 在vue组件里： import {mapGetters} from 'vuex'
+ * computed: {
+ *		...mapGetters([
+ *			'fullScreen'
+ *		])
+ *	}
  */
 export const singer = state => state.singer
 
