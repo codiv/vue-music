@@ -5,6 +5,7 @@
 		<keep-alive>
 			<router-view></router-view>
 		</keep-alive>
+		<!--player放在APP页面，则切换路由不会影响播放器的播放-->
 		<player></player>
 	</div>
 </template>

@@ -1,15 +1,23 @@
 <template>
-	<div class="player">
-		<div class="normal-polayer">
+	<div class="player" v-show="playlist.length>0">
+		<div class="normal-polayer" v-show="fullScreen">
 			播放器
 		</div>
-		<div class="mini-player"></div>
+		<div class="mini-player" v-show="!fullScreen"></div>
 	</div>
 </template>
 
 <script type="text/ecmascript-6">
+	import {mapGetters} from 'vuex'
 	
-	export default {}
+	export default {
+		computed: {
+			...mapGetters([
+				'fullScreen', //控制播放器的显示和隐藏
+				'playlist' //控制播放器的渲染
+			])
+		}
+	}
 
 </script>
 
