@@ -2,20 +2,20 @@
 	<div class="player" v-show="playlist.length>0">
 		<div class="normal-polayer" v-show="fullScreen">
 			<div class="background">
-				<img width="100%" height="100%">
+				<img width="100%" height="100%" :src="currentSong.image">
 			</div>
 			<div class="top">
-				<div class="back">
+				<div class="back" @click="back">
 					<i class="icon-back"></i>
 				</div>
-				<h1 class="title"></h1>
-				<h2 class="subtitle"></h2>
+				<h1 class="title" v-html="currentSong.name"></h1>
+				<h2 class="subtitle" v-html="currentSong.singer"></h2>
 			</div>
 			<div class="middle">
 				<div class="middle-l">
 					<div class="cd-wrapper">
 						<div class="cd">
-							<img class="image">
+							<img class="image" :src="currentSong.image">
 						</div>
 					</div>
 				</div>
@@ -42,11 +42,11 @@
 		</div>
 		<div class="mini-player" v-show="!fullScreen">
 			<div class="icon">
-				<img width="100%" height="100%">
+				<img width="100%" height="100%" :src="currentSong.image">
 			</div>
 			<div class="text">
-				<h2 class="name"></h2>
-				<p class="desc"></p>
+				<h2 class="name" v-html="currentSong.name"></h2>
+				<p class="desc" v-html="currentSong.singer"></p>
 			</div>
 			<div class="control"></div>
 			<div class="control">
@@ -57,13 +57,25 @@
 </template>
 
 <script type="text/ecmascript-6">
-	import {mapGetters} from 'vuex'
+	import {mapGetters, mapMutations} from 'vuex'
 
 	export default {
+		created() {
+			console.log(this.currentSong)
+		},
+		methods: {
+			back() {
+				this.setFullScreen(false)
+			},
+			...mapMutations({
+				setFullScreen: 'SET_FULL_SCREEN'
+			})
+		},
 		computed: {
 			...mapGetters([
 				'fullScreen', //控制播放器的显示和隐藏
-				'playlist' //控制播放器的渲染
+				'playlist', //控制播放器的渲染
+				'currentSong'
 			])
 		}
 	}
@@ -187,5 +199,42 @@
 			width: 100%
 			height: 60px
 			background: $color-highlight-background
-
+			.icon
+				flex: 0 0 40px
+				width: 40px
+				padding: 0 10px 0 20px
+				img
+					border-radius: 50%
+					&.play
+						animation: rotate 10s linear infinite
+					&.pause
+						animation-play-state: paused
+			.text
+				display: flex
+				flex-direction: column
+				justify-content: center
+				flex: 1
+				line-height: 20px
+				overflow: hidden
+				.name
+					margin-bottom: 2px
+					no-wrap()
+					font-size: $font-size-medium
+					color: $color-text
+				.desc
+					no-wrap()
+					font-size: $font-size-small
+					color: $color-text-d
+			.control
+				flex: 0 0 30px
+				width: 30px
+				padding: 0 10px
+				.icon-play-mini, .icon-pause-mini, .icon-playlist
+					font-size: 30px
+					color: $color-theme-d
+				.icon-mini
+					font-size: 32px
+					position: absolute
+					left: 0
+					top: 0
 </style>
