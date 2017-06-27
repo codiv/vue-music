@@ -40,7 +40,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="mini-player" v-show="!fullScreen">
+		<div class="mini-player" v-show="!fullScreen" @click="open">
 			<div class="icon">
 				<img width="100%" height="100%" :src="currentSong.image">
 			</div>
@@ -64,8 +64,11 @@
 			console.log(this.currentSong)
 		},
 		methods: {
-			back() {
+			back() { //收起播放器，并展开mini播放器
 				this.setFullScreen(false)
+			},
+			open() { //展开播放器
+				this.setFullScreen(true)
 			},
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN'
