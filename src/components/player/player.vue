@@ -32,13 +32,13 @@
 							<i class="icon-sequence"></i>
 						</div>
 						<div class="icon i-left">
-							<i class="icon-prev"></i>
+							<i class="icon-prev" @click="prev"></i>
 						</div>
 						<div class="icon i-center">
-							<i class="icon-play"></i>
+							<i :class="playIcon" @click="togglePlaying"></i>
 						</div>
 						<div class="icon i-right">
-							<i class="icon-next"></i>
+							<i class="icon-next" @click="next"></i>
 						</div>
 						<div class="icon i-right">
 							<i class="icon icon-not-favorite"></i>
@@ -56,12 +56,15 @@
 					<h2 class="name" v-html="currentSong.name"></h2>
 					<p class="desc" v-html="currentSong.singer"></p>
 				</div>
-				<div class="control"></div>
+				<div class="control">
+					<i :class="miniIcon" @click.stop="togglePlaying"></i>
+				</div>
 				<div class="control">
 					<i class="icon-playlist"></i>
 				</div>
 			</div>
 		</transition>
+		<audio :src="currentSong.url" ref="audio"></audio>
 	</div>
 </template>
 
@@ -74,7 +77,7 @@
 
 	export default {
 		created() {
-//			console.log(this.currentSong)
+			console.log(this.currentSong)
 		},
 		methods: {
 			back() { //收起播放器，并展开mini播放器
@@ -124,6 +127,13 @@
 				this.$refs.cdWrapper.style.transition = ''
 				this.$refs.cdWrapper.style[transform] = ''
 			},
+			togglePlaying() {
+				this.setPlayingState(!this.playing)
+			},
+			prev() {
+			},
+			next() {
+			},
 			_getPosAndScale() {
 				const targetWidth = 40 //小CD的宽度
 				const paddingLeft = 40 //小CD的中心点到左边线的宽度
@@ -140,14 +150,35 @@
 				}
 			},
 			...mapMutations({
-				setFullScreen: 'SET_FULL_SCREEN'
+				setFullScreen: 'SET_FULL_SCREEN',
+				setPlayingState: 'SET_PLAYING_STATE'
 			})
 		},
-		computed: {
+		watch: {
+			currentSong() {
+				setTimeout(() => { //确保DOM的渲染之后
+					this.$refs.audio.play()
+				}, 20)
+			},
+			playing(newval) {
+				const audio = this.$refs.audio
+				this.$nextTick(() => { //确保DOM的渲染之后
+					newval ? audio.play() : audio.pause()
+				})
+			}
+		},
+		computed: { //计算
+			playIcon() {
+				return this.playing ? 'icon-pause' : 'icon-play'
+			},
+			miniIcon() {
+				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+			},
 			...mapGetters([
 				'fullScreen', //控制播放器的显示和隐藏
 				'playlist', //控制播放器的渲染
-				'currentSong'
+				'currentSong',
+				'playing' //播放的状态（正在播放、暂停中）
 			])
 		}
 	}
