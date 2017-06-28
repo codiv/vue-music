@@ -10,7 +10,7 @@
 			<li v-for="group in singer" class="list-group" ref="listGroup">
 				<h2 class="list-group-title">{{group.title}}</h2>
 				<ul>
-					<li v-for="item in group.items" class="list-group-item">
+					<li v-for="item in group.items" class="list-group-item" @click="selectItem(item)">
 						<img class="avatar" v-lazy="item.avatar">
 						<span class="name">{{item.name}}</span>
 					</li>
@@ -87,6 +87,9 @@
 			},
 			scroll(pos) { //滚动的时候，取得滚动时Y轴的值。
 				this.scrollY = pos.y
+			},
+			selectItem(item) {
+				this.$emit('select', item)
 			},
 			_calculateHeight() {
 				this.listHeight = []
