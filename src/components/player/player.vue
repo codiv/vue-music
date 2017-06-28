@@ -50,7 +50,7 @@
 		<transition name="mini">
 			<div class="mini-player" v-show="!fullScreen" @click="open">
 				<div class="icon">
-					<img width="100%" height="100%" :src="currentSong.image">
+					<img width="100%" height="100%" :src="currentSong.image" :class="playAnimation">
 				</div>
 				<div class="text">
 					<h2 class="name" v-html="currentSong.name"></h2>
