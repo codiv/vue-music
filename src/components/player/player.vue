@@ -20,7 +20,7 @@
 				<div class="middle">
 					<div class="middle-l">
 						<div class="cd-wrapper" ref="cdWrapper">
-							<div class="cd">
+							<div class="cd" :class="playAnimation">
 								<img class="image" :src="currentSong.image">
 							</div>
 						</div>
@@ -171,6 +171,9 @@
 			playIcon() {
 				return this.playing ? 'icon-pause' : 'icon-play'
 			},
+			playAnimation() {
+				return this.playing ? 'play' : 'play pause'
+			},
 			miniIcon() {
 				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
 			},
@@ -260,6 +263,10 @@
 							box-sizing: border-box
 							border: 10px solid rgba(255, 255, 255, 0.1);
 							border-radius: 50%
+							&.play
+								animation: rotate 20s linear infinite
+							&.pause
+								animation-play-state: paused
 							.image
 								position: absolute
 								left: 0
@@ -354,4 +361,9 @@
 					position: absolute
 					left: 0
 					top: 0
+	@keyframes rotate
+		0%
+			transform: rotate(0)
+		100%
+			transform: rotate(360deg)
 </style>
