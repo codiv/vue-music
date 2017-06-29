@@ -64,7 +64,8 @@
 				</div>
 			</div>
 		</transition>
-		<audio :src="currentSong.url" ref="audio"></audio>
+		<!--歌曲可以播放的时候，派发一个oncanplay的事件，出错的时候派发onerror事件-->
+		<audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error"></audio>
 	</div>
 </template>
 
@@ -76,8 +77,10 @@
 	const transform = prefixStyle('transform')
 
 	export default {
-		created() {
-			console.log(this.currentSong)
+		data() {
+			return {
+				songReady: false
+			}
 		},
 		methods: {
 			back() { //收起播放器，并展开mini播放器
@@ -127,22 +130,41 @@
 				this.$refs.cdWrapper.style.transition = ''
 				this.$refs.cdWrapper.style[transform] = ''
 			},
-			togglePlaying() {
+			togglePlaying() { //播放、暂停
 				this.setPlayingState(!this.playing)
 			},
-			prev() {
+			prev() { //上一首
+				if (!this.songReady) {
+					return
+				}
 				let index = this.currentIndex - 1
-				if (index === -1) {
+				if (index === -1) { //当歌曲是第一首歌的时候
 					index = this.playlist.length - 1
 				}
 				this.setCurrentIndex(index)
+				if (!this.playing) { //暂停时切换，切换完成之后自动播放
+					this.togglePlaying()
+				}
+				this.songReady = false
 			},
-			next() {
+			next() { //下一首
+				if (!this.songReady) {
+					return
+				}
 				let index = this.currentIndex + 1
-				if (index === this.playlist.length) {
+				if (index === this.playlist.length) { //当歌曲是最后首歌的时候
 					index = 0
 				}
 				this.setCurrentIndex(index)
+				if (!this.playing) {
+					this.togglePlaying()
+				}
+				this.songReady = false
+			},
+			ready() {
+				this.songReady = true //可以播放的时候设置为true的状态
+			},
+			error() {
 			},
 			_getPosAndScale() {
 				const targetWidth = 40 //小CD的宽度
