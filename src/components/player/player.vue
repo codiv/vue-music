@@ -131,8 +131,18 @@
 				this.setPlayingState(!this.playing)
 			},
 			prev() {
+				let index = this.currentIndex - 1
+				if (index === -1) {
+					index = this.playlist.length - 1
+				}
+				this.setCurrentIndex(index)
 			},
 			next() {
+				let index = this.currentIndex + 1
+				if (index === this.playlist.length) {
+					index = 0
+				}
+				this.setCurrentIndex(index)
 			},
 			_getPosAndScale() {
 				const targetWidth = 40 //小CD的宽度
@@ -151,7 +161,8 @@
 			},
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
-				setPlayingState: 'SET_PLAYING_STATE'
+				setPlayingState: 'SET_PLAYING_STATE',
+				setCurrentIndex: 'SET_CURRENT_INDEX'
 			})
 		},
 		watch: {
@@ -181,7 +192,8 @@
 				'fullScreen', //控制播放器的显示和隐藏
 				'playlist', //控制播放器的渲染
 				'currentSong',
-				'playing' //播放的状态（正在播放、暂停中）
+				'playing', //播放的状态（正在播放、暂停中）
+				'currentIndex' //当前播放索引（当前播放的首歌下标）
 			])
 		}
 	}
