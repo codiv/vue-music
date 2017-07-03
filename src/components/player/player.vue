@@ -31,13 +31,13 @@
 						<div class="icon i-left">
 							<i class="icon-sequence"></i>
 						</div>
-						<div class="icon i-left">
+						<div class="icon i-left" :class="disableCls">
 							<i class="icon-prev" @click="prev"></i>
 						</div>
-						<div class="icon i-center">
+						<div class="icon i-center" :class="disableCls">
 							<i :class="playIcon" @click="togglePlaying"></i>
 						</div>
-						<div class="icon i-right">
+						<div class="icon i-right" :class="disableCls">
 							<i class="icon-next" @click="next"></i>
 						</div>
 						<div class="icon i-right">
@@ -209,6 +209,9 @@
 			},
 			miniIcon() {
 				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+			},
+			disableCls() { // 图标禁用状态
+				return this.songReady ? '' : 'disable'
 			},
 			...mapGetters([
 				'fullScreen', //控制播放器的显示和隐藏
