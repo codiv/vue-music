@@ -1,8 +1,8 @@
 <template>
-	<div class="progress-bar">
+	<div class="progress-bar" ref="progressBar">
 		<div class="bar-inner">
 			<div class="progress" ref="progress"></div>
-			<div class="progress-btn-wrapper">
+			<div class="progress-btn-wrapper" ref="progressBtn">
 				<div class="progress-btn"></div>
 			</div>
 		</div>
@@ -10,8 +10,29 @@
 </template>
 
 <script type="text/ecmascript-6">
-	
-	export default {}
+	import {prefixStyle} from 'common/js/dom'
+
+	const progressBtnWidth = 16 //进度条小球的宽度
+	const transform = prefixStyle('transform')
+
+	export default {
+		props: {
+			percent: {
+				type: Number,
+				default: 0
+			}
+		},
+		watch: {
+			percent(newPercent) {
+				if (newPercent >= 0) {
+					const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth //外框的宽度
+					const offsetWidth = newPercent * barWidth //进度条的偏移量
+					this.$refs.progress.style.width = `${offsetWidth}px` // 改变进度条的width
+					this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px,0,0)` // 改变进度条中的小球位置
+				}
+			}
+		}
+	}
 
 </script>
 
