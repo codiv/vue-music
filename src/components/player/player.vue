@@ -165,6 +165,7 @@
 				this.songReady = true //可以播放的时候设置为true的状态
 			},
 			error() {
+        this.songReady = true
 			},
 			_getPosAndScale() {
 				const targetWidth = 40 //小CD的宽度
