@@ -28,8 +28,8 @@
 				</div>
 				<div class="bottom">
 					<div class="progress-wrapper">
-						<span class="time time-l"></span>
-						<span class="time time-r"></span>
+						<span class="time time-l">{{format(currentTime)}}</span>
+						<span class="time time-r">{{format(currentSong.duration)}}</span>
 					</div>
 					<div class="operators">
 						<div class="icon i-left">
@@ -68,8 +68,12 @@
 				</div>
 			</div>
 		</transition>
-		<!--歌曲可以播放的时候，派发一个oncanplay的事件，出错的时候派发onerror事件-->
-		<audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error"></audio>
+		<!--
+		audio说明：
+		1.歌曲可以播放的时候，派发一个oncanplay的事件，出错的时候派发onerror事件
+		2.ontimeupdate事件：播放时间改变时(当前的播放位置发送改变时触发)
+		-->
+		<audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
 	</div>
 </template>
 
@@ -83,7 +87,8 @@
 	export default {
 		data() {
 			return {
-				songReady: false
+				songReady: false,
+				currentTime: 0
 			}
 		},
 		methods: {
@@ -170,6 +175,23 @@
 			},
 			error() {
 				this.songReady = true
+			},
+			updateTime(e) {
+				this.currentTime = e.target.currentTime
+			},
+			format(interval) {
+				interval = interval | 0 //向下取整,相当于Math.floor
+				const minute = interval / 60 | 0 //分钟，| 0为向下取整
+				const second = this._pad(interval % 60)
+				return `${minute}:${second}`
+			},
+			_pad(num, n = 2) { //补0
+				let len = num.toString().length
+				while (len < n) {
+					num = '0' + num
+					len++
+				}
+				return num
 			},
 			_getPosAndScale() {
 				const targetWidth = 40 //小CD的宽度
