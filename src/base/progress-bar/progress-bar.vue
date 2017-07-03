@@ -1,5 +1,5 @@
 <template>
-	<div class="progress-bar" ref="progressBar">
+	<div class="progress-bar" ref="progressBar" @click="progressClick">
 		<div class="bar-inner">
 			<div class="progress" ref="progress"></div>
 			<!--
@@ -56,6 +56,17 @@
 			progressTouchEnd() {
 				this.touch.initiated = false
 				this._triggerPercent() //手指移动结束后，告诉父级改变播放时间
+			},
+			progressClick(e) {
+				/*
+				 * getBoundingClientRect():
+				 * 返回一个矩形对象，包含四个属性：left、top、right和bottom。
+				 * 分别表示元素各边与页面上边和左边的距离。
+				 * */
+				const rect = this.$refs.progressBar.getBoundingClientRect()
+				const offsetWidth = e.pageX - rect.left
+				this._offset(offsetWidth)
+				this._triggerPercent()
 			},
 			_offset(offsetWidth) {
 				this.$refs.progress.style.width = `${offsetWidth}px` // 改变进度条的width

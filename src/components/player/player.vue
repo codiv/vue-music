@@ -196,6 +196,9 @@
 				* 当设置该属性时，播放会跳跃到指定的位置。
 				* */
 				this.$refs.audio.currentTime = currentTime
+				if (!this.playing) { //拖放完成之后，如果是暂停状态，则触发播放
+					this.togglePlaying()
+				}
 			},
 			_pad(num, n = 2) { //补0
 				let len = num.toString().length
