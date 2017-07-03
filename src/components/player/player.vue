@@ -30,7 +30,7 @@
 					<div class="progress-wrapper">
 						<span class="time time-l">{{format(currentTime)}}</span>
 						<div class="progress-bar-wrapper">
-							<progress-bar :percent="percent"></progress-bar>
+							<progress-bar :percent="percent" @percentChange="onPercentChange"></progress-bar>
 						</div>
 						<span class="time time-r">{{format(currentSong.duration)}}</span>
 					</div>
@@ -188,6 +188,14 @@
 				const minute = interval / 60 | 0 //分钟，| 0为向下取整
 				const second = this._pad(interval % 60)
 				return `${minute}:${second}`
+			},
+			onPercentChange(percent) {
+				const currentTime = this.currentSong.duration * percent
+				/*
+				* currentTime属性设置或返回播放的当前位置（以秒计）。
+				* 当设置该属性时，播放会跳跃到指定的位置。
+				* */
+				this.$refs.audio.currentTime = currentTime
 			},
 			_pad(num, n = 2) { //补0
 				let len = num.toString().length
