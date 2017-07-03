@@ -27,6 +27,10 @@
 					</div>
 				</div>
 				<div class="bottom">
+					<div class="progress-wrapper">
+						<span class="time time-l"></span>
+						<span class="time time-r"></span>
+					</div>
 					<div class="operators">
 						<div class="icon i-left">
 							<i class="icon-sequence"></i>
@@ -165,6 +169,7 @@
 				this.songReady = true //可以播放的时候设置为true的状态
 			},
 			error() {
+				this.songReady = true
 			},
 			_getPosAndScale() {
 				const targetWidth = 40 //小CD的宽度
