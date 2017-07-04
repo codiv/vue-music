@@ -35,8 +35,8 @@
 						<span class="time time-r">{{format(currentSong.duration)}}</span>
 					</div>
 					<div class="operators">
-						<div class="icon i-left">
-							<i class="icon-sequence"></i>
+						<div class="icon i-left" @click="changeMode">
+							<i :class="iconMode"></i>
 						</div>
 						<div class="icon i-left" :class="disableCls">
 							<i class="icon-prev" @click="prev"></i>
@@ -88,6 +88,7 @@
 	import {prefixStyle} from 'common/js/dom'
 	import ProgressBar from 'base/progress-bar/progress-bar'
 	import ProgressCircle from 'base/progress-circle/progress-circle'
+	import {playMode} from 'common/js/config'
 
 	const transform = prefixStyle('transform')
 
@@ -146,6 +147,10 @@
 			afterLeave() { //置空对DOM的操作
 				this.$refs.cdWrapper.style.transition = ''
 				this.$refs.cdWrapper.style[transform] = ''
+			},
+			changeMode() {
+				const mode = (this.mode + 1) % 3 //3取余
+				this.setPlayMode(mode)
 			},
 			togglePlaying() { //播放、暂停
 				this.setPlayingState(!this.playing)
@@ -230,7 +235,8 @@
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
-				setCurrentIndex: 'SET_CURRENT_INDEX'
+				setCurrentIndex: 'SET_CURRENT_INDEX',
+				setPlayMode: 'SET_PLAY_MODE'
 			})
 		},
 		watch: {
@@ -253,6 +259,9 @@
 			playAnimation() {
 				return this.playing ? 'play' : 'play pause'
 			},
+			iconMode() {
+				return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+			},
 			miniIcon() {
 				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
 			},
@@ -267,7 +276,8 @@
 				'playlist', //控制播放器的渲染
 				'currentSong',
 				'playing', //播放的状态（正在播放、暂停中）
-				'currentIndex' //当前播放索引（当前播放的首歌下标）
+				'currentIndex', //当前播放索引（当前播放的首歌下标）
+				'mode'	//播放模式
 			])
 		},
 		components: {
