@@ -64,7 +64,9 @@
 					<p class="desc" v-html="currentSong.singer"></p>
 				</div>
 				<div class="control">
-					<i :class="miniIcon" @click.stop="togglePlaying"></i>
+					<progress-circle :radius="radius" :percent="percent">
+						<i :class="miniIcon" class="icon-mini" @click.stop="togglePlaying"></i>
+					</progress-circle>
 				</div>
 				<div class="control">
 					<i class="icon-playlist"></i>
@@ -85,6 +87,7 @@
 	import animations from 'create-keyframe-animation'
 	import {prefixStyle} from 'common/js/dom'
 	import ProgressBar from 'base/progress-bar/progress-bar'
+	import ProgressCircle from 'base/progress-circle/progress-circle'
 
 	const transform = prefixStyle('transform')
 
@@ -92,7 +95,8 @@
 		data() {
 			return {
 				songReady: false,
-				currentTime: 0
+				currentTime: 0,
+				radius: 32
 			}
 		},
 		methods: {
@@ -192,9 +196,9 @@
 			onPercentChange(percent) {
 				const currentTime = this.currentSong.duration * percent
 				/*
-				* currentTime属性设置或返回播放的当前位置（以秒计）。
-				* 当设置该属性时，播放会跳跃到指定的位置。
-				* */
+				 * currentTime属性设置或返回播放的当前位置（以秒计）。
+				 * 当设置该属性时，播放会跳跃到指定的位置。
+				 * */
 				this.$refs.audio.currentTime = currentTime
 				if (!this.playing) { //拖放完成之后，如果是暂停状态，则触发播放
 					this.togglePlaying()
@@ -267,7 +271,8 @@
 			])
 		},
 		components: {
-			ProgressBar
+			ProgressBar,
+			ProgressCircle
 		}
 	}
 
