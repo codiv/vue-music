@@ -276,6 +276,7 @@
 				}
 				setTimeout(() => { //确保DOM的渲染之后
 					this.$refs.audio.play()
+					this.currentSong.getLyric()
 				}, 20)
 			},
 			playing(newval) {

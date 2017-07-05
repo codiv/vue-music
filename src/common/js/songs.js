@@ -1,6 +1,10 @@
 /**
  * Created by codiv on 2017/6/21.
  */
+import {getLyric} from 'api/song'
+import {ERR_OK} from 'api/config'
+import {Base64} from 'js-base64'
+
 export default class Song {
     constructor({id, mid, singer, name, album, duration, image, url}) {
         this.id = id
@@ -11,6 +15,34 @@ export default class Song {
         this.duration = duration
         this.image = image
         this.url = url
+    }
+
+    getLyric() {
+        getLyric(this.mid).then((res) => {
+            /*
+             *把类似于JSONPCallback的数据进行处理
+             * 数据（res）：
+             * "MusicJsonCallback({\"retcode\":0,\"code\":0,\"subcode\":0,\"lyric\":\"})"
+             *对res进行处理，这个处理可以放在dev-sever.js里进行
+             * 做法如下：
+             * 1.先用正则表达处理，进行分组，得出“matches”
+             * 2.取出所需的数据，得出matches[1]
+             * 3.对数据（matches[1]） JSON字符串进行解析
+             *
+             *  */
+            if (typeof res === 'string') {
+                let reg = /^\w+\(({[^()]+})\)/
+                let matches = res.match(reg)
+                if (matches) {
+                    console.log(matches)
+                    res = JSON.parse(matches[1]) //JSON.parse()方法解析一个JSON字符串
+                }
+            }
+            if (res.retcode === ERR_OK) {
+                this.lyric = Base64.decode(res.lyric)
+                console.log(this.lyric)
+            }
+        })
     }
 }
 
