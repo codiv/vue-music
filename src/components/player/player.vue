@@ -89,6 +89,7 @@
 	import ProgressBar from 'base/progress-bar/progress-bar'
 	import ProgressCircle from 'base/progress-circle/progress-circle'
 	import {playMode} from 'common/js/config'
+	import {shuffle} from 'common/js/util'
 
 	const transform = prefixStyle('transform')
 
@@ -151,6 +152,13 @@
 			changeMode() {
 				const mode = (this.mode + 1) % 3 //3取余
 				this.setPlayMode(mode)
+				let list = null
+				if (mode === playMode.random) {
+					list = shuffle(this.sequenceList)
+				} else {
+					list = this.sequenceList
+				}
+				this.setPlayList(list)
 			},
 			togglePlaying() { //播放、暂停
 				this.setPlayingState(!this.playing)
@@ -236,7 +244,8 @@
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
 				setCurrentIndex: 'SET_CURRENT_INDEX',
-				setPlayMode: 'SET_PLAY_MODE'
+				setPlayMode: 'SET_PLAY_MODE',
+				setPlayList: 'SET_PLAYLIST'
 			})
 		},
 		watch: {
@@ -277,7 +286,8 @@
 				'currentSong',
 				'playing', //播放的状态（正在播放、暂停中）
 				'currentIndex', //当前播放索引（当前播放的首歌下标）
-				'mode'	//播放模式
+				'mode',	//播放模式
+				'sequenceList' //歌曲列表（随机、顺序、单曲）
 			])
 		},
 		components: {
