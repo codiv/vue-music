@@ -77,8 +77,10 @@
 		audio说明：
 		1.歌曲可以播放的时候，派发一个oncanplay的事件，出错的时候派发onerror事件
 		2.ontimeupdate事件：播放时间改变时(当前的播放位置发送改变时触发)
+		3.onended事件：当歌曲播放完之后，派发的件事
 		-->
-		<audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
+		<audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error" @timeupdate="updateTime"
+			   @ended="end"></audio>
 	</div>
 </template>
 
@@ -183,6 +185,17 @@
 					this.togglePlaying()
 				}
 				this.songReady = false
+			},
+			end() { //当歌曲播放完之后
+				if (this.mode === playMode.loop) { //单曲循环状态时
+					this.loop()
+				} else { //随机、顺序播放状态时
+					this.next()
+				}
+			},
+			loop() {
+				this.$refs.audio.currentTime = 0
+				this.$refs.audio.play()
 			},
 			next() { //下一首
 				if (!this.songReady) {
