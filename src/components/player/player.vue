@@ -158,7 +158,14 @@
 				} else {
 					list = this.sequenceList
 				}
+				this.resetCurrentIndex(list) //解决：切换播放模式时，当前正在播放的歌曲不在发生改变
 				this.setPlayList(list)
+			},
+			resetCurrentIndex(list) {
+				let index = list.findIndex((item) => {
+					return item.id === this.currentSong.id
+				})
+				this.setCurrentIndex(index)
 			},
 			togglePlaying() { //播放、暂停
 				this.setPlayingState(!this.playing)
@@ -249,7 +256,11 @@
 			})
 		},
 		watch: {
-			currentSong() {
+			currentSong(newSong, oldSong) {
+				if (newSong.id === oldSong.id) {
+					//解决：当前歌曲暂停时，切换播放模式的时候歌自动播放BUG
+					return
+				}
 				setTimeout(() => { //确保DOM的渲染之后
 					this.$refs.audio.play()
 				}, 20)
