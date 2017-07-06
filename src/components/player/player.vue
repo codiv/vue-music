@@ -199,6 +199,9 @@
 			},
 			togglePlaying() { //播放、暂停
 				this.setPlayingState(!this.playing)
+				if (this.currentLyric) { //解决：歌曲暂停时，歌曲不暂停问题
+					this.currentLyric.togglePlay()
+				}
 			},
 			prev() { //上一首
 				if (!this.songReady) {
@@ -224,6 +227,9 @@
 			loop() {
 				this.$refs.audio.currentTime = 0
 				this.$refs.audio.play()
+				if (this.currentLyric) { //解决：单曲循环播放的时候，歌词不循环播放BUG
+					this.currentLyric.seek(0)
+				}
 			},
 			next() { //下一首
 				if (!this.songReady) {
@@ -383,6 +389,9 @@
 				if (newSong.id === oldSong.id) {
 					//解决：当前歌曲暂停时，切换播放模式的时候歌自动播放BUG
 					return
+				}
+				if (this.currentLyric) { //解决切换歌曲时，歌词乱跳的BUG
+					this.currentLyric.stop()
 				}
 				setTimeout(() => { //确保DOM的渲染之后
 					this.$refs.audio.play()
