@@ -115,6 +115,7 @@
 	import Scroll from 'base/scroll/scroll'
 
 	const transform = prefixStyle('transform')
+	const transitionDuration = prefixStyle('transitionDuration')
 
 	export default {
 		data() {
@@ -308,6 +309,9 @@
 				const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
 				this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
 				this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+				this.$refs.lyricList.$el.style[transitionDuration] = 0
+				this.$refs.middleL.style.opacity = 1 - this.touch.percent
+				this.$refs.middleL.style[transitionDuration] = 0
 			},
 			middleTouchEnd() {
 				/*
@@ -316,24 +320,32 @@
 				 *
 				 * */
 				let offsetWidth
+				let opacity
 				if (this.currentShow === 'cd') { //从右向左滑动
-					if (this.touch.percent > 0.1) {//滑动成功后
+					if (this.touch.percent > 0.1) { //滑动成功后
 						offsetWidth = -window.innerWidth
-						this.$refs.middleL.style.opacity = 0 //CD隐藏
+						opacity = 0
 						this.currentShow = 'lyric'
 					} else {
 						offsetWidth = 0
+						opacity = 1
 					}
 				} else { //从左向右滑动
 					if (this.touch.percent < 0.9) {
 						offsetWidth = 0
-						this.$refs.middleL.style.opacity = 1
+						opacity = 1
 						this.currentShow = 'cd'
 					} else {
 						offsetWidth = -window.innerWidth
+						opacity = 0
 					}
 				}
+				const time = 300
 				this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+				this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms`
+				this.$refs.middleL.style.opacity = opacity //CD隐藏
+				this.$refs.middleL.style[transitionDuration] = `${time}ms`
+				this.touch.initiated = false
 			},
 			_pad(num, n = 2) { //补0
 				let len = num.toString().length
