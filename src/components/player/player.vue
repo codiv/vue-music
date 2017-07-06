@@ -25,6 +25,13 @@
 							</div>
 						</div>
 					</div>
+					<div class="middle-r" ref="lyricList">
+						<div class="lyric-wrapper">
+							<div v-if="currentLyric">
+								<p class="text" ref="lyricLine" v-for="line in currentLyric.lines">{{line.txt}}</p>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="bottom">
 					<div class="progress-wrapper">
@@ -417,6 +424,23 @@
 								width: 100%
 								height: 100%
 								border-radius: 50%
+				.middle-r
+					display: inline-block
+					vertical-align: top
+					width: 100%
+					height: 100%
+					overflow: hidden
+					.lyric-wrapper
+						width: 80%
+						margin: 0 auto
+						overflow: hidden
+						text-align: center
+						.text
+							line-height: 32px
+							color: $color-text-l
+							font-size: $font-size-medium
+							&.current
+								color: $color-text
 			.bottom
 				position: absolute
 				bottom: 50px
