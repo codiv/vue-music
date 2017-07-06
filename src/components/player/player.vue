@@ -17,7 +17,11 @@
 					<h1 class="title" v-html="currentSong.name"></h1>
 					<h2 class="subtitle" v-html="currentSong.singer"></h2>
 				</div>
-				<div class="middle">
+				<div class="middle"
+					 @touchstart.prevent="middleTouchStart"
+					 @touchmove.prevent="middleTouchMove"
+					 @touchend="middleTouchEnd"
+				>
 					<div class="middle-l">
 						<div class="cd-wrapper" ref="cdWrapper">
 							<div class="cd" :class="playAnimation">
@@ -122,6 +126,9 @@
 				currentLineNum: 0, //当前歌词所在的行数
 				currentShow: 'cd' //歌曲与歌词切换的标志
 			}
+		},
+		created() {
+			this.touch = {} //因为不用get和set所以放在created()里，它只用来作事件通信
 		},
 		methods: {
 			back() { //收起播放器，并展开mini播放器
@@ -273,6 +280,35 @@
 				} else {
 					this.$refs.lyricList.scrollTo(0, 0, 1000) //滚动到顶部
 				}
+			},
+			middleTouchStart(e) {
+				this.touch.initiated = true //标志是否已触发点击
+				const touch = e.touches[0] //第一个手指
+				//记录点击的x、y的坐标
+				this.touch.startX = touch.pageX
+				this.touch.startY = touch.pageY
+			},
+			middleTouchMove(e) {
+				if (!this.touch.initiated) { //判断是否已点击
+					return
+				}
+				const touch = e.touches[0]
+				const deltaX = touch.pageX - this.touch.startX
+				const deltaY = touch.pageY - this.touch.startY
+				if (Math.abs(deltaY) > Math.abs(deltaX)) {
+					/*
+					 * 作用：
+					 * middleTouchMove()事件在本次是只作横向滚动的触发，不做纵向
+					 * deltaY > deltaX是说明手指向下或者向上移动。
+					 * 当手指向下或者向上移动，说明是srcoll的上下滚动
+					 * */
+					return
+				}
+				const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
+				const width = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+				this.$refs.lyricList.$el.style[transform] = `translate3d(${width}px,0,0)`
+			},
+			middleTouchEnd() {
 			},
 			_pad(num, n = 2) { //补0
 				let len = num.toString().length
