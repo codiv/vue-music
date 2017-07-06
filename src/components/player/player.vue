@@ -38,6 +38,10 @@
 					</scroll>
 				</div>
 				<div class="bottom">
+					<div class="dot-wrapper">
+						<span class="dot" :class="{'active':currentShow === 'cd'}"></span>
+						<span class="dot" :class="{'active':currentShow === 'lyric'}"></span>
+					</div>
 					<div class="progress-wrapper">
 						<span class="time time-l">{{format(currentTime)}}</span>
 						<div class="progress-bar-wrapper">
@@ -112,10 +116,11 @@
 		data() {
 			return {
 				songReady: false,
-				currentTime: 0,
+				currentTime: 0, //歌曲播放时间
 				radius: 32,
 				currentLyric: null, //歌词
-				currentLineNum: 0 //当前歌词所在的行数
+				currentLineNum: 0, //当前歌词所在的行数
+				currentShow: 'cd' //歌曲与歌词切换的标志
 			}
 		},
 		methods: {
@@ -463,6 +468,21 @@
 				position: absolute
 				bottom: 50px
 				width: 100%
+				.dot-wrapper
+					text-align: center
+					font-size: 0
+					.dot
+						display: inline-block
+						vertical-align: middle
+						margin: 0 4px
+						width: 8px
+						height: 8px
+						border-radius: 50%
+						background: $color-text-l
+						&.active
+							width: 20px
+							border-radius: 5px
+							background: $color-text-ll
 				.progress-wrapper
 					display: flex
 					align-items: center
