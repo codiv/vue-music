@@ -25,13 +25,17 @@
 							</div>
 						</div>
 					</div>
-					<div class="middle-r" ref="lyricList">
+					<!--currentLyric.lines默认是null，所以加多一个currentLyric，不然会报错-->
+					<scroll class="middle-r" ref="lyricList" :loadData="currentLyric && currentLyric.lines">
 						<div class="lyric-wrapper">
 							<div v-if="currentLyric">
-								<p class="text" ref="lyricLine" v-for="line in currentLyric.lines">{{line.txt}}</p>
+								<p class="text" ref="lyricLine"
+								   :class="{'current': currentLineNum === index}"
+								   v-for="(line,index) in currentLyric.lines">
+									{{line.txt}}</p>
 							</div>
 						</div>
-					</div>
+					</scroll>
 				</div>
 				<div class="bottom">
 					<div class="progress-wrapper">
@@ -100,6 +104,7 @@
 	import {playMode} from 'common/js/config'
 	import {shuffle} from 'common/js/util'
 	import Lyric from 'lyric-parser'
+	import Scroll from 'base/scroll/scroll'
 
 	const transform = prefixStyle('transform')
 
@@ -109,7 +114,8 @@
 				songReady: false,
 				currentTime: 0,
 				radius: 32,
-				currentLyric: null //歌词
+				currentLyric: null, //歌词
+				currentLineNum: 0 //当前歌词所在的行数
 			}
 		},
 		methods: {
@@ -248,9 +254,20 @@
 			},
 			getLyric() {
 				this.currentSong.getLyric().then((lyric) => {
-					this.currentLyric = new Lyric(lyric)
-					console.log(this.currentLyric)
+					this.currentLyric = new Lyric(lyric, this.handleLyric) //this.handleLyric回调函数
+					if (this.playing) {
+						this.currentLyric.play()
+					}
 				})
+			},
+			handleLyric({lineNum, txt}) { //当每行歌词发生改变的时候，回调
+				this.currentLineNum = lineNum
+				if (lineNum > 5) {
+					let lineEl = this.$refs.lyricLine[lineNum - 5]
+					this.$refs.lyricList.scrollToElement(lineEl, 1000)
+				} else {
+					this.$refs.lyricList.scrollTo(0, 0, 1000) //滚动到顶部
+				}
 			},
 			_pad(num, n = 2) { //补0
 				let len = num.toString().length
@@ -332,7 +349,8 @@
 		},
 		components: {
 			ProgressBar,
-			ProgressCircle
+			ProgressCircle,
+			Scroll
 		}
 	}
 
