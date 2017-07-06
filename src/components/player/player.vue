@@ -22,7 +22,7 @@
 					 @touchmove.prevent="middleTouchMove"
 					 @touchend="middleTouchEnd"
 				>
-					<div class="middle-l">
+					<div class="middle-l" ref="middleL">
 						<div class="cd-wrapper" ref="cdWrapper">
 							<div class="cd" :class="playAnimation">
 								<img class="image" :src="currentSong.image">
@@ -305,10 +305,35 @@
 					return
 				}
 				const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
-				const width = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
-				this.$refs.lyricList.$el.style[transform] = `translate3d(${width}px,0,0)`
+				const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+				this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
+				this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
 			},
 			middleTouchEnd() {
+				/*
+				 * 向左滑动：
+				 * 滑动大于10%，就自动切换
+				 *
+				 * */
+				let offsetWidth
+				if (this.currentShow === 'cd') { //从右向左滑动
+					if (this.touch.percent > 0.1) {//滑动成功后
+						offsetWidth = -window.innerWidth
+						this.$refs.middleL.style.opacity = 0 //CD隐藏
+						this.currentShow = 'lyric'
+					} else {
+						offsetWidth = 0
+					}
+				} else { //从左向右滑动
+					if (this.touch.percent < 0.9) {
+						offsetWidth = 0
+						this.$refs.middleL.style.opacity = 1
+						this.currentShow = 'cd'
+					} else {
+						offsetWidth = -window.innerWidth
+					}
+				}
+				this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
 			},
 			_pad(num, n = 2) { //补0
 				let len = num.toString().length
