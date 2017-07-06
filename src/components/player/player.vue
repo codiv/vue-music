@@ -28,6 +28,9 @@
 								<img class="image" :src="currentSong.image">
 							</div>
 						</div>
+						<div class="playing-lyric-wrapper">
+							<div class="playing-lyric">{{playingLyric}}</div>
+						</div>
 					</div>
 					<!--currentLyric.lines默认是null，所以加多一个currentLyric，不然会报错-->
 					<scroll class="middle-r" ref="lyricList" :loadData="currentLyric && currentLyric.lines">
@@ -125,6 +128,7 @@
 				radius: 32,
 				currentLyric: null, //歌词
 				currentLineNum: 0, //当前歌词所在的行数
+				playingLyric: '', //当前歌词
 				currentShow: 'cd' //歌曲与歌词切换的标志
 			}
 		},
@@ -270,6 +274,9 @@
 				if (!this.playing) { //拖放完成之后，如果是暂停状态，则触发播放
 					this.togglePlaying()
 				}
+				if (this.currentLyric) { //拖放完成之后，改变对应的歌曲显示行
+					this.currentLyric.seek(currentTime * 1000) //转化为毫秒（currentTime是秒）
+				}
 			},
 			getLyric() {
 				this.currentSong.getLyric().then((lyric) => {
@@ -287,6 +294,7 @@
 				} else {
 					this.$refs.lyricList.scrollTo(0, 0, 1000) //滚动到顶部
 				}
+				this.playingLyric = txt
 			},
 			middleTouchStart(e) {
 				this.touch.initiated = true //标志是否已触发点击
@@ -529,6 +537,16 @@
 								width: 100%
 								height: 100%
 								border-radius: 50%
+					.playing-lyric-wrapper
+						width: 80%
+						margin: 30px auto 0 auto
+						overflow: hidden
+						text-align: center
+						.playing-lyric
+							height: 20px
+							line-height: 20px
+							font-size: $font-size-medium
+							color: $color-text-l
 				.middle-r
 					display: inline-block
 					vertical-align: top
