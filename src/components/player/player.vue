@@ -211,13 +211,17 @@
 				if (!this.songReady) {
 					return
 				}
-				let index = this.currentIndex - 1
-				if (index === -1) { //当歌曲是第一首歌的时候
-					index = this.playlist.length - 1
-				}
-				this.setCurrentIndex(index)
-				if (!this.playing) { //暂停时切换，切换完成之后自动播放
-					this.togglePlaying()
+				if (this.playlist === 1) { //解决：单曲循环播放的时候，歌词不循环播放BUG
+					this.loop()
+				} else {
+					let index = this.currentIndex - 1
+					if (index === -1) { //当歌曲是第一首歌的时候
+						index = this.playlist.length - 1
+					}
+					this.setCurrentIndex(index)
+					if (!this.playing) { //暂停时切换，切换完成之后自动播放
+						this.togglePlaying()
+					}
 				}
 				this.songReady = false
 			},
@@ -239,13 +243,17 @@
 				if (!this.songReady) {
 					return
 				}
-				let index = this.currentIndex + 1
-				if (index === this.playlist.length) { //当歌曲是最后首歌的时候
-					index = 0
-				}
-				this.setCurrentIndex(index)
-				if (!this.playing) {
-					this.togglePlaying()
+				if (this.playlist.length === 1) { //解决：当播放列表只有一首歌曲时的BUG
+					this.loop()
+				} else {
+					let index = this.currentIndex + 1
+					if (index === this.playlist.length) { //当歌曲是最后首歌的时候
+						index = 0
+					}
+					this.setCurrentIndex(index)
+					if (!this.playing) {
+						this.togglePlaying()
+					}
 				}
 				this.songReady = false
 			},
@@ -284,6 +292,10 @@
 					if (this.playing) {
 						this.currentLyric.play()
 					}
+				}).catch(() => { //当获取不到歌词的时候
+					this.currentLyric = null
+					this.playingLyric = ''
+					this.currentLineNum = 0
 				})
 			},
 			handleLyric({lineNum, txt}) { //当每行歌词发生改变的时候，回调
@@ -404,7 +416,7 @@
 				setTimeout(() => { //确保DOM的渲染之后
 					this.$refs.audio.play()
 					this.getLyric()
-				}, 20)
+				}, 1000) //设置1000是为了解决微信端播放的问题（视频第七章24节10分钟之后）
 			},
 			playing(newval) {
 				const audio = this.$refs.audio
