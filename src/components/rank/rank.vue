@@ -28,6 +28,7 @@
 	import Scroll from 'base/scroll/scroll'
 	import Loading from 'base/loading/loading'
 	import {playlistMixin} from 'common/js/mixin'
+	import {mapMutations} from 'vuex'
 	
 	export default {
 		mixins: [playlistMixin],
@@ -44,6 +45,7 @@
 				this.$router.push({
 					path: `/rank/${item.id}`
 				})
+				this.setTopList(item)
 			},
 			handlePlayList(playlist) {
 				const bottom = playlist.length ? '60px' : 0
@@ -57,7 +59,10 @@
 						console.log(this.topList)
 					}
 				})
-			}
+			},
+			...mapMutations({
+				setTopList: 'SET_TOP_LIST'
+			})
 		},
 		components: {
 			Scroll,

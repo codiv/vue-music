@@ -7,8 +7,14 @@
 
 <script type="text/ecmascript-6">
 	import MusicList from 'components/music-list/music-list'
+	import {mapGetters} from 'vuex'
 
 	export default {
+		computed: {
+			...mapGetters([
+				'toplist'
+			])
+		},
 		components: {
 			MusicList
 		}
