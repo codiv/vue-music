@@ -58,6 +58,9 @@
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-
+	.disc-enter-active, .disc-leave-active
+		transition: all 0.3s
+	.disc-enter, .disc-leave-to
+		transform: translate3d(100%, 0, 0)
 
 </style>
