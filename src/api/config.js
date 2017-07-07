@@ -10,4 +10,9 @@ export const options = {
     param: 'jsonpCallback'
 }
 
+export const optionsJpn = { //解决获取数据出错问题“jp1 is not defined”
+    param: 'jsonpCallback',
+    prefix: 'playlistinfoCallback'
+}
+
 export const ERR_OK = 0
