@@ -20,7 +20,7 @@ export const playlistMixin = {
             this.handlePlayList(newval)
         }
     },
-    method: {
+    method: { //如果vue组件未定义handlePlayList()则抛出以下错误提示
         handlePlayList() {
             throw new Error('component must implement handlePlaylist method')
         }
