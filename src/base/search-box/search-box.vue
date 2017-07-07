@@ -22,13 +22,16 @@
 		methods: {
 			clear() {
 				this.query = ''
+			},
+			setQuery(query) {
+				this.query = query
 			}
 		},
 		created() {
 			/*
-			* 时时监测query（搜索框的值）的值的变化并派发出去
-			* this.$watch() 相当 watch钩子函数
-			* */
+			 * 时时监测query（搜索框的值）的值的变化并派发出去
+			 * this.$watch() 相当 watch钩子函数
+			 * */
 			this.$watch('query', (newQuery) => {
 				this.$emit('query', newQuery)
 			})
