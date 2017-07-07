@@ -91,6 +91,9 @@
 			selectItem(item) {
 				this.$emit('select', item)
 			},
+			refresh() {
+				this.$refs.listview.refresh()
+			},
 			_calculateHeight() {
 				this.listHeight = []
 				let list = this.$refs.listGroup
