@@ -2,7 +2,7 @@
 	<div class="rank" ref="rank">
 		<scroll class="toplist" :loadData="topList" ref="toplist">
 			<ul>
-				<li class="item" v-for="item in topList">
+				<li class="item" v-for="item in topList" @click="selectItem(item)">
 					<div class="icon">
 						<img width="100" height="100" :src="item.picUrl">
 					</div>
@@ -18,6 +18,7 @@
 				<loading></loading>
 			</div>
 		</scroll>
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -39,6 +40,11 @@
 			this._getTopList()
 		},
 		methods: {
+			selectItem(item) {
+				this.$router.push({
+					path: `/rank/${item.id}`
+				})
+			},
 			handlePlayList(playlist) {
 				const bottom = playlist.length ? '60px' : 0
 				this.$refs.rank.style.bottom = bottom
