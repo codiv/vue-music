@@ -1,26 +1,63 @@
 <template>
-	<div class="rank">
-		<div class="toplist">
+	<div class="rank" ref="rank">
+		<scroll class="toplist" :loadData="topList" ref="toplist">
 			<ul>
-				<li class="item">
+				<li class="item" v-for="item in topList">
 					<div class="icon">
-						<img width="100" height="100">
+						<img width="100" height="100" :src="item.picUrl">
 					</div>
 					<ul class="songlist">
-						<li class="song">
-							<span></span>
-							<span></span>
+						<li class="song" v-for="(song, index) in item.songList">
+							<span>{{index + 1}}</span>
+							<span>{{song.songname}}-{{song.singername}}</span>
 						</li>
 					</ul>
 				</li>
 			</ul>
-		</div>
+			<div class="loading-container" v-show="!topList.length">
+				<loading></loading>
+			</div>
+		</scroll>
 	</div>
 </template>
 
 <script type="text/ecmascript-6">
+	import {getTopList} from 'api/rank'
+	import {ERR_OK} from 'api/config'
+	import Scroll from 'base/scroll/scroll'
+	import Loading from 'base/loading/loading'
+	import {playlistMixin} from 'common/js/mixin'
 	
-	export default {}
+	export default {
+		mixins: [playlistMixin],
+		data() {
+			return {
+				topList: []
+			}
+		},
+		created() {
+			this._getTopList()
+		},
+		methods: {
+			handlePlayList(playlist) {
+				const bottom = playlist.length ? '60px' : 0
+				this.$refs.rank.style.bottom = bottom
+				this.$refs.toplist.refresh()
+			},
+			_getTopList() {
+				getTopList().then((res) => {
+					if (res.code === ERR_OK) {
+						this.topList = res.data.topList
+						console.log(this.topList)
+					}
+				})
+			}
+		},
+		components: {
+			Scroll,
+			Loading
+		}
+	}
 
 </script>
 
