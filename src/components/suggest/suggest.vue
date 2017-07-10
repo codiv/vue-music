@@ -1,5 +1,5 @@
 <template>
-	<div class="suggest">
+	<scroll class="suggest" :loadData="result">
 		<ul class="suggest-list">
 			<li class="suggest-item" v-for="item in result">
 				<div class="icon">
@@ -10,14 +10,15 @@
 				</div>
 			</li>
 		</ul>
-	</div>
+	</scroll>
 
 </template>
 
 <script type="text/ecmascript-6">
 	import {search} from 'api/search'
 	import {ERR_OK} from 'api/config'
-	import {filterSinger} from 'common/js/songs'
+	import {createSong} from 'common/js/songs'
+	import Scroll from 'base/scroll/scroll'
 
 	const TYPE_SINGER = 'singer' //用于“歌手与歌曲”的区别
 
@@ -51,14 +52,13 @@
 					return item.singername
 				} else {
 					//filterSinger()是把多个歌手转成字符串放在一起
-					return `${item.songname}-${filterSinger(item.singer)}`
+					return `${item.name}-${item.singer}`
 				}
 			},
 			search() {
 				search(this.query, this.page, this.showSinger).then((res) => {
 					if (res.code === ERR_OK) {
 						this.result = this._genResult(res.data)
-						console.log(this.result)
 					}
 				})
 			},
@@ -74,8 +74,17 @@
 					ret.push({...data.zhida, ...{type: TYPE_SINGER}})
 				}
 				if (data.song) {
-					ret = ret.concat(data.song.list)
+					ret = ret.concat(this._normalizeSongs(data.song.list))
 				}
+				return ret
+			},
+			_normalizeSongs(list) {
+				const ret = []
+				list.forEach((data) => {
+					if (data.songid && data.albummid) {
+						ret.push(createSong(data))
+					}
+				})
 				return ret
 			}
 		},
@@ -83,6 +92,9 @@
 			query() {
 				this.search()
 			}
+		},
+		components: {
+			Scroll
 		}
 	}
 
