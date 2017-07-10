@@ -12,15 +12,15 @@ export function getHotKey() {
     return jsonp(url, data, options)
 }
 
-export function search(query, page, zhida) {
+export function search(query, page, zhida, perpage) {
     const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
 
     const data = Object.assign({}, commonParams, {
         w: query, //搜索内容
         p: page, //第几页
         catZhida: zhida ? 1 : 0, //是否搜索歌手
-        perpage: 20, //每页的条数
-        n: 20,
+        perpage, //每页的条数
+        n: perpage,
         zhidaqu: 1,
         t: 0,
         flag: 1,

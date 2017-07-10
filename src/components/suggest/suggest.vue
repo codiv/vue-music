@@ -1,5 +1,9 @@
 <template>
-	<scroll class="suggest" :loadData="result">
+	<scroll class="suggest"
+			:loadData="result"
+			:pullup="pullup"
+			@srcollToEnd="seachMore"
+	>
 		<ul class="suggest-list">
 			<li class="suggest-item" v-for="item in result">
 				<div class="icon">
@@ -9,6 +13,7 @@
 					<p class="text" v-html="getDisplayName(item)"></p>
 				</div>
 			</li>
+			<loading v-show="hasMore" title=""></loading>
 		</ul>
 	</scroll>
 
@@ -19,8 +24,10 @@
 	import {ERR_OK} from 'api/config'
 	import {createSong} from 'common/js/songs'
 	import Scroll from 'base/scroll/scroll'
+	import Loading from 'base/loading/loading'
 
 	const TYPE_SINGER = 'singer' //用于“歌手与歌曲”的区别
+	const PERPAGE = 20 //每页20条
 
 	export default {
 		props: {
@@ -36,6 +43,8 @@
 		data() {
 			return {
 				page: 1, //第几页
+				pullup: true, //是否开启上拉加载
+				hasMore: true,
 				result: []
 			}
 		},
@@ -56,9 +65,31 @@
 				}
 			},
 			search() {
-				search(this.query, this.page, this.showSinger).then((res) => {
+				/*
+				* 在这里初始一次this.page 与 this.hasMore
+				* 原因：
+				* 同一个关键词，在搜索框多次搜索时，如果不刷新页面时，
+				* 则，第二次以上搜索，就会出来数据缺少的情况。
+				* 验证：
+				* 可以在seachMore() 方法里的“this.page++”后面console验证一下
+				* */
+				this.page = 1
+				this.hasMore = true
+				search(this.query, this.page, this.showSinger, PERPAGE).then((res) => {
 					if (res.code === ERR_OK) {
 						this.result = this._genResult(res.data)
+					}
+				})
+			},
+			seachMore() {
+				if (!this.hasMore) {
+					return
+				}
+				this.page++
+				search(this.query, this.page, this.showSinger, PERPAGE).then((res) => {
+					if (res.code === ERR_OK) {
+						this.result = this.result.concat(this._genResult(res.data))
+						this._checkMore(res.data)
 					}
 				})
 			},
@@ -86,6 +117,12 @@
 					}
 				})
 				return ret
+			},
+			_checkMore(data) { //检测是否加载完所有的数据
+				const song = data.song
+				if (!song.list.length || (song.curnum + song.curpage * PERPAGE) > song.totalnum) {
+					this.hasMore = false
+				}
 			}
 		},
 		watch: {
@@ -94,7 +131,8 @@
 			}
 		},
 		components: {
-			Scroll
+			Scroll,
+			Loading
 		}
 	}
 

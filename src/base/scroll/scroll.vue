@@ -28,11 +28,15 @@
 				type: Array,
 				default: null
 			},
-			refreshDelay: {
+			refreshDelay: { //监测loadData数据是否发生变化
 				type: Number,
 				default: 20
 			},
-			listenScroll: {
+			listenScroll: { //是否要监听滚动事件
+				type: Boolean,
+				default: false
+			},
+			pullup: { //是否上拉加载更多
 				type: Boolean,
 				default: false
 			}
@@ -56,6 +60,14 @@
 					let me = this
 					this.scroll.on('scroll', (pos) => {
 						me.$emit('scroll', pos)
+					})
+				}
+
+				if (this.pullup) {
+					this.scroll.on('scrollEnd', () => {
+						if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+							this.$emit('srcollToEnd')
+						}
 					})
 				}
 			},
