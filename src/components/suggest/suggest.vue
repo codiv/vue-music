@@ -1,12 +1,12 @@
 <template>
 	<div class="suggest">
 		<ul class="suggest-list">
-			<li class="suggest-item">
+			<li class="suggest-item" v-for="item in result">
 				<div class="icon">
-					<i></i>
+					<i :class="getIconCls(item)"></i>
 				</div>
 				<div class="name">
-					<p class="text"></p>
+					<p class="text" v-html="getDisplayName(item)"></p>
 				</div>
 			</li>
 		</ul>
@@ -17,8 +17,9 @@
 <script type="text/ecmascript-6">
 	import {search} from 'api/search'
 	import {ERR_OK} from 'api/config'
+	import {filterSinger} from 'common/js/songs'
 
-	const TYPE_SINGER = 'singer'
+	const TYPE_SINGER = 'singer' //用于“歌手与歌曲”的区别
 
 	export default {
 		props: {
@@ -33,24 +34,49 @@
 		},
 		data() {
 			return {
-				page: 1 //第几页
+				page: 1, //第几页
+				result: []
 			}
 		},
 		methods: {
+			getIconCls(item) {
+				if (item.type === TYPE_SINGER) {
+					return 'icon-mine'
+				} else {
+					return 'icon-music'
+				}
+			},
+			getDisplayName(item) {
+				if (item.type === TYPE_SINGER) {
+					return item.singername
+				} else {
+					//filterSinger()是把多个歌手转成字符串放在一起
+					return `${item.songname}-${filterSinger(item.singer)}`
+				}
+			},
 			search() {
 				search(this.query, this.page, this.showSinger).then((res) => {
 					if (res.code === ERR_OK) {
-						this._genResult(res.data)
+						this.result = this._genResult(res.data)
+						console.log(this.result)
 					}
 				})
 			},
 			_genResult(data) {
 				let ret = []
+				//注意添加数组的顺序，因为显示时，歌手是最前面，则添加歌手在前
 				if (data.zhida && data.zhida.singerid) {
+					/*
+					 * 三个点“...”是扩展运算符。
+					 * 把“...data.zhida”整体拷贝到ret对象里
+					 * 给“ ...{type: TYPE_SINGER}”ret对象赋值或者添加一个type属性，以下是修改值
+					 * */
 					ret.push({...data.zhida, ...{type: TYPE_SINGER}})
 				}
-				console.log(ret)
-				console.log(data.zhida)
+				if (data.song) {
+					ret = ret.concat(data.song.list)
+				}
+				return ret
 			}
 		},
 		watch: {
