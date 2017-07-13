@@ -20,6 +20,7 @@
 		<div class="search-result" v-show="query">
 			<suggest :query="query"></suggest>
 		</div>
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -29,7 +30,7 @@
 	import Suggest from 'components/suggest/suggest'
 	import {getHotKey} from 'api/search'
 	import {ERR_OK} from 'api/config'
-	
+
 	export default {
 		data() {
 			return {

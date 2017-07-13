@@ -6,7 +6,7 @@
 			@srcollToEnd="seachMore"
 	>
 		<ul class="suggest-list">
-			<li class="suggest-item" v-for="item in result">
+			<li class="suggest-item" v-for="item in result" @click="selectItem(item)">
 				<div class="icon">
 					<i :class="getIconCls(item)"></i>
 				</div>
@@ -16,8 +16,8 @@
 			</li>
 			<loading v-show="hasMore" title=""></loading>
 		</ul>
-
 	</scroll>
+
 </template>
 
 <script type="text/ecmascript-6">
@@ -26,6 +26,8 @@
 	import {createSong} from 'common/js/songs'
 	import Scroll from 'base/scroll/scroll'
 	import Loading from 'base/loading/loading'
+	import Singer from 'common/js/singer'
+	import {mapMutations} from 'vuex'
 
 	const TYPE_SINGER = 'singer' //用于“歌手与歌曲”的区别
 	const PERPAGE = 20 //每页20条
@@ -95,6 +97,18 @@
 					}
 				})
 			},
+			selectItem(item) {
+				if (item.type === TYPE_SINGER) {
+					const singer = new Singer({
+						id: item.singermid,
+						name: item.singername
+					})
+					this.$router.push({
+						path: `/search/${singer.id}`
+					})
+					this.setSinger(singer)
+				}
+			},
 			_genResult(data) {
 				let ret = []
 				//注意添加数组的顺序，因为显示时，歌手是最前面，则添加歌手在前
@@ -129,7 +143,10 @@
 				if (!song.list.length || (song.curnum + song.curpage * PERPAGE) > song.totalnum) {
 					this.hasMore = false
 				}
-			}
+			},
+			...mapMutations({
+				setSinger: 'SET_SINGER' //跟store/mutations-types.js	里的SET_SINGER映射
+			})
 		},
 		watch: {
 			query() {
