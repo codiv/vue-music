@@ -1,5 +1,6 @@
 <template>
 	<scroll class="suggest"
+			ref="suggest"
 			:loadData="result"
 			:pullup="pullup"
 			@srcollToEnd="seachMore"
@@ -15,8 +16,8 @@
 			</li>
 			<loading v-show="hasMore" title=""></loading>
 		</ul>
-	</scroll>
 
+	</scroll>
 </template>
 
 <script type="text/ecmascript-6">
@@ -66,15 +67,16 @@
 			},
 			search() {
 				/*
-				* 在这里初始一次this.page 与 this.hasMore
-				* 原因：
-				* 同一个关键词，在搜索框多次搜索时，如果不刷新页面时，
-				* 则，第二次以上搜索，就会出来数据缺少的情况。
-				* 验证：
-				* 可以在seachMore() 方法里的“this.page++”后面console验证一下
-				* */
+				 * 在这里初始化this.page 、this.hasMore与this.$refs.suggest.scrollTo(0, 0)
+				 * 原因：
+				 * 同一个关键词，在搜索框多次搜索时，如果不刷新页面时，
+				 * 则，第二次以上搜索，就会出来数据缺少的情况。
+				 * 验证：
+				 * 可以在seachMore() 方法里的“this.page++”后面console验证一下
+				 * */
 				this.page = 1
 				this.hasMore = true
+				this.$refs.suggest.scrollTo(0, 0) //保证初始时，scroll是在最上面
 				search(this.query, this.page, this.showSinger, PERPAGE).then((res) => {
 					if (res.code === ERR_OK) {
 						this.result = this._genResult(res.data)
@@ -118,7 +120,11 @@
 				})
 				return ret
 			},
-			_checkMore(data) { //检测是否加载完所有的数据
+			_checkMore(data) {
+				/*
+				 *检测是否加载完所有的数据
+				 * !song.list.length 表示没有返回数据
+				 * */
 				const song = data.song
 				if (!song.list.length || (song.curnum + song.curpage * PERPAGE) > song.totalnum) {
 					this.hasMore = false
