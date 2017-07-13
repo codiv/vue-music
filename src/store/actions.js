@@ -52,3 +52,15 @@ export const randomPlay = function ({commit}, {list}) {
     commit(types.SET_FULL_SCREEN, true) //把播放器打开
     commit(types.SET_PLAYING_STATE, true) //修改播放状态
 }
+
+export const insertSong = function ({commit, state}, song) {
+    let playlist = state.playlist //歌曲列表
+    /*
+     * 查找当前列表中是否有待插入的歌曲并返回其索引
+     *在列表中，找到传进来的歌曲（song）并返回索引，如果没有返回-1
+     * */
+    let fpIndex = findIndex(playlist, song)
+    console.log(fpIndex)
+    console.log(playlist)
+    console.log(song)
+}

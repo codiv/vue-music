@@ -27,7 +27,7 @@
 	import Scroll from 'base/scroll/scroll'
 	import Loading from 'base/loading/loading'
 	import Singer from 'common/js/singer'
-	import {mapMutations} from 'vuex'
+	import {mapMutations, mapActions} from 'vuex'
 
 	const TYPE_SINGER = 'singer' //用于“歌手与歌曲”的区别
 	const PERPAGE = 20 //每页20条
@@ -107,6 +107,8 @@
 						path: `/search/${singer.id}`
 					})
 					this.setSinger(singer)
+				} else {
+					this.insertSong(item)
 				}
 			},
 			_genResult(data) {
@@ -146,7 +148,10 @@
 			},
 			...mapMutations({
 				setSinger: 'SET_SINGER' //跟store/mutations-types.js	里的SET_SINGER映射
-			})
+			}),
+			...mapActions([
+				'insertSong'
+			])
 		},
 		watch: {
 			query() {
