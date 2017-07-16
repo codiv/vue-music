@@ -1,12 +1,12 @@
 <template>
 	<transition name="confirm-fade">
-		<div class="confirm">
+		<div class="confirm" v-show="showFlag">
 			<div class="confirm-wrapper">
 				<div class="confirm-content">
-					<p class="text"></p>
+					<p class="text">{{text}}</p>
 					<div class="operate">
-						<div class="operate-btn left"></div>
-						<div class="operate-btn"></div>
+						<div @click="cancel" class="operate-btn left">{{cancelBtnText}}</div>
+						<div @click="confirm" class="operate-btn">{{confirmBtnText}}</div>
 					</div>
 				</div>
 			</div>
@@ -15,7 +15,43 @@
 </template>
 
 <script type="text/ecmascript-6">
-	export default {}
+	export default {
+		props: {
+			text: {
+				type: String,
+				default: ''
+			},
+			confirmBtnText: {
+				type: String,
+				default: '确定'
+			},
+			cancelBtnText: {
+				type: String,
+				default: '取消'
+			}
+		},
+		data() {
+			return {
+				showFlag: false
+			}
+		},
+		methods: {
+			show() {
+				this.showFlag = true
+			},
+			hide() {
+				this.showFlag = false
+			},
+			cancel() { //取消操作
+				this.hide()
+				this.$emit('cancel')
+			},
+			confirm() { //确定操作
+				this.hide()
+				this.$emit('confirm')
+			}
+		}
+	}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
