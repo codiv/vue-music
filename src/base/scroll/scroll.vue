@@ -39,6 +39,10 @@
 			pullup: { //是否上拉加载更多
 				type: Boolean,
 				default: false
+			},
+			beforeScroll: { //滚动开始之前
+				type: Boolean,
+				default: false
 			}
 		},
 		mounted() {
@@ -68,6 +72,12 @@
 						if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
 							this.$emit('srcollToEnd')
 						}
+					})
+				}
+
+				if (this.beforeScroll) {
+					this.scroll.on('beforeScrollStart', () => {
+						this.$emit('beforeScroll')
 					})
 				}
 			},

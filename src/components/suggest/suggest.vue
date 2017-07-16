@@ -3,7 +3,9 @@
 			ref="suggest"
 			:loadData="result"
 			:pullup="pullup"
+			:beforeScroll="beforeScroll"
 			@srcollToEnd="seachMore"
+			@beforeScroll="listScroll"
 	>
 		<ul class="suggest-list">
 			<li class="suggest-item" v-for="item in result" @click="selectItem(item)">
@@ -51,6 +53,7 @@
 				page: 1, //第几页
 				pullup: true, //是否开启上拉加载
 				hasMore: true,
+				beforeScroll: true,
 				result: []
 			}
 		},
@@ -114,6 +117,9 @@
 				} else {
 					this.insertSong(item)  //设置insertSong
 				}
+			},
+			listScroll() {
+				this.$emit('listScroll')
 			},
 			_genResult(data) {
 				let ret = []

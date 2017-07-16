@@ -1,7 +1,7 @@
 <template>
 	<div class="search-box">
 		<i class="icon-search"></i>
-		<input v-model="query" :placeholder="placeholder" class="box">
+		<input v-model="query" :placeholder="placeholder" ref="query" class="box">
 		<i class="icon-dismiss" v-show="query" @click="clear"></i>
 	</div>
 </template>
@@ -26,6 +26,10 @@
 			},
 			setQuery(query) {
 				this.query = query
+			},
+			blur() {
+				//input光标失去焦点，则手机移动里端，键盘就会收起
+				this.$refs.query.blur()
 			}
 		},
 		created() {
