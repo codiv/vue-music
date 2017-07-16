@@ -108,7 +108,7 @@
 					})
 					this.setSinger(singer)
 				} else {
-					this.insertSong(item)
+					this.insertSong(item)  //设置insertSong
 				}
 			},
 			_genResult(data) {
@@ -150,7 +150,7 @@
 				setSinger: 'SET_SINGER' //跟store/mutations-types.js	里的SET_SINGER映射
 			}),
 			...mapActions([
-				'insertSong'
+				'insertSong' //调用insertSong
 			])
 		},
 		watch: {
