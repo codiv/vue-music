@@ -19,6 +19,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
+import {saveSearch} from 'common/js/cache'
 
 //封闭定义一个动作：selectPlay（选择播放）
 function findIndex(list, song) { //点击的歌曲与随机播放歌曲列表相对应
@@ -55,12 +56,12 @@ export const randomPlay = function ({commit}, {list}) {
 
 export const insertSong = function ({commit, state}, song) {
     /*
-    * 报错：
-    * Error: [vuex] Do not mutate vuex store state outside mutation handlers.
-    * 意思是：不要在我们mutation的回调函数之外修改
-    *因为在这里我们需要修改playlist与sequenceList，而这两个只能在mutation里修改
-    *所以，在这里我们需要用slice() 方法来复制一个副本出来操作
-    * */
+     * 报错：
+     * Error: [vuex] Do not mutate vuex store state outside mutation handlers.
+     * 意思是：不要在我们mutation的回调函数之外修改
+     *因为在这里我们需要修改playlist与sequenceList，而这两个只能在mutation里修改
+     *所以，在这里我们需要用slice() 方法来复制一个副本出来操作
+     * */
     let playlist = state.playlist.slice() //播放列表
     let sequenceList = state.sequenceList.slice() //歌曲列表（随机、顺序、单曲）
     let currentIndex = state.currentIndex //当前播放索引（当前播放的首歌下标）
@@ -114,4 +115,8 @@ export const insertSong = function ({commit, state}, song) {
     commit(types.SET_CURRENT_INDEX, currentIndex)
     commit(types.SET_FULL_SCREEN, true)
     commit(types.SET_PLAYING_STATE, true)
+}
+
+export const saveSearchHistory = function ({commit}, query) {
+    commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }

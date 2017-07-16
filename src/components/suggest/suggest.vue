@@ -117,6 +117,7 @@
 				} else {
 					this.insertSong(item)  //设置insertSong
 				}
+				this.$emit('select', item)
 			},
 			listScroll() {
 				this.$emit('listScroll')
