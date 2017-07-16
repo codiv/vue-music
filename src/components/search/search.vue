@@ -17,11 +17,11 @@
 					<div class="search-history" v-show="searchHistory.length">
 						<h1 class="title">
 							<span class="text">搜索历史</span>
-							<span class="clear" @click="deleteAll">
+							<span class="clear" @click="clearSearchHistory">
 								<i class="icon-clear"></i>
 							</span>
 						</h1>
-						<search-list :searches="searchHistory" @select="addQuery" @delete="deleteOne"></search-list>
+						<search-list :searches="searchHistory" @select="addQuery" @delete="deleteSearchHistory"></search-list>
 					</div>
 				</div>
 			</scroll>
@@ -64,12 +64,6 @@
 			},
 			saveSearch() {
 				this.saveSearchHistory(this.query) //把搜索框的值进行储存
-			},
-			deleteOne(item) {
-				this.deleteSearchHistory(item)
-			},
-			deleteAll() {
-				this.clearSearchHistory()
 			},
 			_getHotKey() {
 				getHotKey().then((res) => {
