@@ -54,8 +54,15 @@ export const randomPlay = function ({commit}, {list}) {
 }
 
 export const insertSong = function ({commit, state}, song) {
-    let playlist = state.playlist //播放列表
-    let sequenceList = state.sequenceList //歌曲列表（随机、顺序、单曲）
+    /*
+    * 报错：
+    * Error: [vuex] Do not mutate vuex store state outside mutation handlers.
+    * 意思是：不要在我们mutation的回调函数之外修改
+    *因为在这里我们需要修改playlist与sequenceList，而这两个只能在mutation里修改
+    *所以，在这里我们需要用slice() 方法来复制一个副本出来操作
+    * */
+    let playlist = state.playlist.slice() //播放列表
+    let sequenceList = state.sequenceList.slice() //歌曲列表（随机、顺序、单曲）
     let currentIndex = state.currentIndex //当前播放索引（当前播放的首歌下标）
     //记录当前的歌曲
     let currentSong = playlist[currentIndex]
