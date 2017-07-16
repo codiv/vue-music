@@ -122,6 +122,9 @@
 			listScroll() {
 				this.$emit('listScroll')
 			},
+			refresh() {
+				this.$refs.suggest.refresh()
+			},
 			_genResult(data) {
 				let ret = []
 				//注意添加数组的顺序，因为显示时，歌手是最前面，则添加歌手在前
