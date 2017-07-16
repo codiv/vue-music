@@ -7,6 +7,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+	import {debounce} from 'common/js/util'
 	export default {
 		props: {
 			placeholder: {
@@ -31,10 +32,11 @@
 			/*
 			 * 时时监测query（搜索框的值）的值的变化并派发出去
 			 * this.$watch() 相当 watch钩子函数
+			 * debounce() 延迟200派发
 			 * */
-			this.$watch('query', (newQuery) => {
+			this.$watch('query', debounce((newQuery) => {
 				this.$emit('query', newQuery)
-			})
+			}, 200))
 		}
 	}
 </script>
