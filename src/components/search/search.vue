@@ -4,7 +4,7 @@
 			<search-box ref="searchBox" @query="onQueryChange"></search-box>
 		</div>
 		<div class="shortcut-wrapper" v-show="!query">
-			<scroll class="shortcut">
+			<scroll class="shortcut" :loadData="shortcut" ref="shortcut">
 				<div>
 					<div class="hot-key">
 						<h1 class="title">热门搜索</h1>
@@ -85,9 +85,29 @@
 			])
 		},
 		computed: {
+			shortcut() {
+				return this.hotKey.concat(this.searchHistory)
+			},
 			...mapGetters([
 				'searchHistory'
 			])
+		},
+		watch: {
+			/*
+			 * BUG：在搜索框输入并搜索出结果后，关闭搜索列表
+			 * 则在不刷新页面的情况下，历史搜索列表不能滚动
+			 * 原因：
+			 * 因为在搜索的时候，搜索出的结果列表也是要滚动的，
+			 * 当关闭搜索结果列表时，scroll还是定位在搜索列表中的DOM上
+			 * 所以，历史搜索列表在滚动之前要重新refresh()一下
+			 * */
+			query(newQuery) {
+				if (!newQuery) {
+					setTimeout(() => {
+						this.$refs.shortcut.refresh()
+					}, 20)
+				}
+			}
 		},
 		components: {
 			SearchBox,
