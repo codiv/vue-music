@@ -16,8 +16,10 @@
 			</li>
 			<loading v-show="hasMore" title=""></loading>
 		</ul>
+		<div v-show="!hasMore && !result.length" class="no-result-wrapper">
+			<no-result title="抱歉，暂无搜索结果"></no-result>
+		</div>
 	</scroll>
-
 </template>
 
 <script type="text/ecmascript-6">
@@ -25,6 +27,7 @@
 	import {ERR_OK} from 'api/config'
 	import {createSong} from 'common/js/songs'
 	import Scroll from 'base/scroll/scroll'
+	import NoResult from 'base/no-result/no-result'
 	import Loading from 'base/loading/loading'
 	import Singer from 'common/js/singer'
 	import {mapMutations, mapActions} from 'vuex'
@@ -82,6 +85,7 @@
 				search(this.query, this.page, this.showSinger, PERPAGE).then((res) => {
 					if (res.code === ERR_OK) {
 						this.result = this._genResult(res.data)
+						this._checkMore(res.data)
 					}
 				})
 			},
@@ -160,7 +164,8 @@
 		},
 		components: {
 			Scroll,
-			Loading
+			Loading,
+			NoResult
 		}
 	}
 
