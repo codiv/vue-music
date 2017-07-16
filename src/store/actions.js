@@ -19,7 +19,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-import {saveSearch} from 'common/js/cache'
+import {saveSearch, deleteSearch, clearSearch} from 'common/js/cache'
 
 //封闭定义一个动作：selectPlay（选择播放）
 function findIndex(list, song) { //点击的歌曲与随机播放歌曲列表相对应
@@ -119,4 +119,12 @@ export const insertSong = function ({commit, state}, song) {
 
 export const saveSearchHistory = function ({commit}, query) {
     commit(types.SET_SEARCH_HISTORY, saveSearch(query))
+}
+
+export const deleteSearchHistory = function ({commit}, query) {
+    commit(types.SET_SEARCH_HISTORY, deleteSearch(query))
+}
+
+export const clearSearchHistory = function ({commit}) {
+    commit(types.SET_SEARCH_HISTORY, clearSearch())
 }
