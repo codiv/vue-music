@@ -9,7 +9,7 @@
 						<span class="clear"><i class="icon-clear"></i></span>
 					</h1>
 				</div>
-				<div class="list-content">
+				<scroll class="list-content" :loadData="sequenceList" ref="listContent">
 					<ul>
 						<li class="item" v-for="item in sequenceList">
 							<i class="current"></i>
@@ -22,7 +22,7 @@
 							</span>
 						</li>
 					</ul>
-				</div>
+				</scroll>
 				<div class="list-operate">
 					<div class="add">
 						<i class="icon-add"></i>
@@ -39,6 +39,7 @@
 
 <script type="text/ecmascript-6">
 	import {mapGetters} from 'vuex'
+	import Scroll from 'base/scroll/scroll'
 
 	export default {
 		data() {
@@ -49,6 +50,16 @@
 		methods: {
 			show() {
 				this.showFlag = true
+				/*
+				*  BUG：解决显示列表之后，无法滚动问题
+				* 因为playlist的数据列表，是点击显示按钮之后才加载的，
+				* 而scroll组件在加载页面的时候就计算好高度了，则这个高度是不对的
+				* 所以在显示playlist组件后，refresh()一下scroll组件，让better-scroll重新计算
+				* 注间：必须放在setTimeout() 或者 nextTick()里进行，否则也无法滚动
+				* */
+				setTimeout(() => {
+					this.$refs.listContent.refresh()
+				}, 20)
 			},
 			hide() {
 				this.showFlag = false
@@ -58,6 +69,9 @@
 			...mapGetters([
 				'sequenceList'
 			])
+		},
+		components: {
+			Scroll
 		}
 	}
 </script>
