@@ -1,7 +1,7 @@
 <template>
 	<transition name="list-fade">
-		<div class="playlist">
-			<div class="list-wrapper">
+		<div class="playlist" v-show="showFlag" @click="hide">
+			<div class="list-wrapper" @click.stop> <!--@click.stop只用来阻止冒泡-->
 				<div class="list-header">
 					<h1 class="title">
 						<i class="icon"></i>
@@ -11,9 +11,9 @@
 				</div>
 				<div class="list-content">
 					<ul>
-						<li class="item">
+						<li class="item" v-for="item in sequenceList">
 							<i class="current"></i>
-							<span class="text"></span>
+							<span class="text">{{item.name}}</span>
 						 	<span class="like">
 								<i></i>
 						 	</span>
@@ -29,7 +29,7 @@
 						<span class="text">添加歌曲到队列</span>
 					</div>
 				</div>
-				<div class="list-close">
+				<div class="list-close" @click="hide">
 					<span>关闭</span>
 				</div>
 			</div>
@@ -38,7 +38,28 @@
 </template>
 
 <script type="text/ecmascript-6">
-	export default {}
+	import {mapGetters} from 'vuex'
+
+	export default {
+		data() {
+			return {
+				showFlag: false
+			}
+		},
+		methods: {
+			show() {
+				this.showFlag = true
+			},
+			hide() {
+				this.showFlag = false
+			}
+		},
+		computed: {
+			...mapGetters([
+				'sequenceList'
+			])
+		}
+	}
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">

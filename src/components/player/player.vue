@@ -90,12 +90,12 @@
 						<i :class="miniIcon" class="icon-mini" @click.stop="togglePlaying"></i>
 					</progress-circle>
 				</div>
-				<div class="control">
+				<div class="control" @click.stop="showPlaylist">
 					<i class="icon-playlist"></i>
 				</div>
 			</div>
 		</transition>
-		<playlist></playlist>
+		<playlist ref="playlist"></playlist>
 		<!--
 		audio说明：
 		1.歌曲可以播放的时候，派发一个oncanplay的事件，出错的时候派发onerror事件
@@ -258,6 +258,9 @@
 					}
 				}
 				this.songReady = false
+			},
+			showPlaylist() {
+				this.$refs.playlist.show()
 			},
 			ready() {
 				this.songReady = true //可以播放的时候设置为true的状态
