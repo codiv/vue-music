@@ -11,7 +11,8 @@
 				</div>
 				<scroll class="list-content" :loadData="sequenceList" ref="listContent">
 					<ul>
-						<li class="item" v-for="(item,index) in sequenceList" @click="selectItem(item,index)">
+						<li class="item" ref="listItem" v-for="(item,index) in sequenceList"
+							@click="selectItem(item,index)">
 							<i class="current" :class="getCurrentIcon(item)"></i>
 							<span class="text">{{item.name}}</span>
 						 	<span class="like">
@@ -60,6 +61,7 @@
 				 * */
 				setTimeout(() => {
 					this.$refs.listContent.refresh()
+					this.scrollToCurrent(this.currentSong)
 				}, 20)
 			},
 			hide() {
@@ -72,7 +74,7 @@
 				return ''
 			},
 			selectItem(item, index) {
-				if (this.mode === playMode.random) {
+				if (this.mode === playMode.random) { //循环播放时
 					index = this.playlist.findIndex((data) => {
 						return data.id === item.id
 					})
@@ -80,15 +82,30 @@
 				this.setCurrentIndex(index) //设置播放歌曲
 				this.setPlayingState(true)  //设置播放状态
 			},
+			scrollToCurrent(curren) {
+				const index = this.sequenceList.findIndex((song) => {
+					return song.id === curren.id
+				})
+				this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
+			},
 			...mapMutations({
 				setCurrentIndex: 'SET_CURRENT_INDEX',
 				setPlayingState: 'SET_PLAYING_STATE'
 			})
 		},
+		watch: {
+			currentSong(newSong, oldSong) {
+				//newSong.id === oldSong.id 单曲循环与只有一首歌曲的时间
+				if (!this.showFlag || newSong.id === oldSong.id) {
+					return
+				}
+				this.scrollToCurrent(newSong)
+			}
+		},
 		computed: {
 			...mapGetters([
 				'sequenceList',
-				'currentSong',
+				'currentSong', //当前歌曲
 				'playlist',
 				'mode'
 			])
