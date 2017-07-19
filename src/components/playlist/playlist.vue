@@ -12,7 +12,7 @@
 				<scroll class="list-content" :loadData="sequenceList" ref="listContent">
 					<ul>
 						<li class="item" v-for="item in sequenceList">
-							<i class="current"></i>
+							<i class="current" :class="getCurrentIcon(item)"></i>
 							<span class="text">{{item.name}}</span>
 						 	<span class="like">
 								<i></i>
@@ -51,23 +51,30 @@
 			show() {
 				this.showFlag = true
 				/*
-				*  BUG：解决显示列表之后，无法滚动问题
-				* 因为playlist的数据列表，是点击显示按钮之后才加载的，
-				* 而scroll组件在加载页面的时候就计算好高度了，则这个高度是不对的
-				* 所以在显示playlist组件后，refresh()一下scroll组件，让better-scroll重新计算
-				* 注间：必须放在setTimeout() 或者 nextTick()里进行，否则也无法滚动
-				* */
+				 *  BUG：解决显示列表之后，无法滚动问题
+				 * 因为playlist的数据列表，是点击显示按钮之后才加载的，
+				 * 而scroll组件在加载页面的时候就计算好高度了，则这个高度是不对的
+				 * 所以在显示playlist组件后，refresh()一下scroll组件，让better-scroll重新计算
+				 * 注间：必须放在setTimeout() 或者 nextTick()里进行，否则也无法滚动
+				 * */
 				setTimeout(() => {
 					this.$refs.listContent.refresh()
 				}, 20)
 			},
 			hide() {
 				this.showFlag = false
+			},
+			getCurrentIcon(item) {
+				if (this.currentSong.id === item.id) {
+					return 'icon-play'
+				}
+				return ''
 			}
 		},
 		computed: {
 			...mapGetters([
-				'sequenceList'
+				'sequenceList',
+				'currentSong'
 			])
 		},
 		components: {
