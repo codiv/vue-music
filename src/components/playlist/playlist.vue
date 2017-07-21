@@ -6,7 +6,7 @@
 					<h1 class="title">
 						<i class="icon"></i>
 						<span class="text"></span>
-						<span class="clear"><i class="icon-clear"></i></span>
+						<span class="clear" @click="showConfirm"><i class="icon-clear"></i></span>
 					</h1>
 				</div>
 				<scroll class="list-content" :loadData="sequenceList" ref="listContent">
@@ -34,6 +34,7 @@
 					<span>关闭</span>
 				</div>
 			</div>
+			<confirm ref="confirm" @confirm="confirmClear" text="是否清空播放列表" confirmBtnText="清空"></confirm>
 		</div>
 	</transition>
 </template>
@@ -41,6 +42,7 @@
 <script type="text/ecmascript-6">
 	import {mapGetters, mapMutations, mapActions} from 'vuex'
 	import Scroll from 'base/scroll/scroll'
+	import Confirm from 'base/confirm/confirm'
 	import {playMode} from 'common/js/config'
 
 	export default {
@@ -94,8 +96,16 @@
 					this.hide()
 				}
 			},
+			showConfirm() {
+				this.$refs.confirm.show()
+			},
+			confirmClear() {
+				this.deleteSongList()
+				this.hide()
+			},
 			...mapActions([
-				'deleteSong'
+				'deleteSong',
+				'deleteSongList'
 			]),
 			...mapMutations({
 				setCurrentIndex: 'SET_CURRENT_INDEX',
@@ -120,7 +130,8 @@
 			])
 		},
 		components: {
-			Scroll
+			Scroll,
+			Confirm
 		}
 	}
 </script>

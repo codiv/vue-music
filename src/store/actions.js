@@ -153,3 +153,11 @@ export const deleteSong = function ({commit, state}, song) {
         commit(types.SET_PLAYING_STATE, true)
     }
 }
+
+export const deleteSongList = function ({commit, state}) {
+    //设为初始值，即可
+    commit(types.SET_PLAYLIST, [])
+    commit(types.SET_SEQUENCE_LIST, [])
+    commit(types.SET_CURRENT_INDEX, -1)
+    commit(types.SET_PLAYING_STATE, false)
+}
