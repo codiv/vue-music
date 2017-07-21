@@ -411,6 +411,10 @@
 		},
 		watch: {
 			currentSong(newSong, oldSong) {
+				//BUG：Uncaught TypeError: this.currentSong.getLyric is not a function
+				if (!newSong) {
+					return
+				}
 				if (newSong.id === oldSong.id) {
 					//解决：当前歌曲暂停时，切换播放模式的时候歌自动播放BUG
 					return
