@@ -114,15 +114,16 @@
 	import ProgressBar from 'base/progress-bar/progress-bar'
 	import ProgressCircle from 'base/progress-circle/progress-circle'
 	import {playMode} from 'common/js/config'
-	import {shuffle} from 'common/js/util'
 	import Lyric from 'lyric-parser'
 	import Scroll from 'base/scroll/scroll'
 	import Playlist from 'components/playlist/playlist'
+	import {playerMixin} from 'common/js/mixin'
 
 	const transform = prefixStyle('transform')
 	const transitionDuration = prefixStyle('transitionDuration')
 
 	export default {
+		mixins: [playerMixin],
 		data() {
 			return {
 				songReady: false,
@@ -184,24 +185,6 @@
 			afterLeave() { //置空对DOM的操作
 				this.$refs.cdWrapper.style.transition = ''
 				this.$refs.cdWrapper.style[transform] = ''
-			},
-			changeMode() {
-				const mode = (this.mode + 1) % 3 //3取余
-				this.setPlayMode(mode)
-				let list = null
-				if (mode === playMode.random) {
-					list = shuffle(this.sequenceList)
-				} else {
-					list = this.sequenceList
-				}
-				this.resetCurrentIndex(list) //解决：切换播放模式时，当前正在播放的歌曲不在发生改变
-				this.setPlayList(list)
-			},
-			resetCurrentIndex(list) {
-				let index = list.findIndex((item) => {
-					return item.id === this.currentSong.id
-				})
-				this.setCurrentIndex(index)
 			},
 			togglePlaying() { //播放、暂停
 				this.setPlayingState(!this.playing)
@@ -402,11 +385,7 @@
 				}
 			},
 			...mapMutations({
-				setFullScreen: 'SET_FULL_SCREEN',
-				setPlayingState: 'SET_PLAYING_STATE',
-				setCurrentIndex: 'SET_CURRENT_INDEX',
-				setPlayMode: 'SET_PLAY_MODE',
-				setPlayList: 'SET_PLAYLIST'
+				setFullScreen: 'SET_FULL_SCREEN'
 			})
 		},
 		watch: {
@@ -441,9 +420,6 @@
 			playAnimation() {
 				return this.playing ? 'play' : 'play pause'
 			},
-			iconMode() {
-				return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-			},
 			miniIcon() {
 				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
 			},
@@ -455,12 +431,8 @@
 			},
 			...mapGetters([
 				'fullScreen', //控制播放器的显示和隐藏
-				'playlist', //控制播放器的渲染
-				'currentSong',
 				'playing', //播放的状态（正在播放、暂停中）
-				'currentIndex', //当前播放索引（当前播放的首歌下标）
-				'mode',	//播放模式
-				'sequenceList' //歌曲列表（随机、顺序、单曲）
+				'currentIndex' //当前播放索引（当前播放的首歌下标）
 			])
 		},
 		components: {

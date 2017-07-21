@@ -4,8 +4,8 @@
 			<div class="list-wrapper" @click.stop> <!--@click.stop只用来阻止冒泡-->
 				<div class="list-header">
 					<h1 class="title">
-						<i class="icon"></i>
-						<span class="text"></span>
+						<i class="icon" :class="iconMode" @click="changeMode"></i>
+						<span class="text">{{modeText}}</span>
 						<span class="clear" @click="showConfirm"><i class="icon-clear"></i></span>
 					</h1>
 				</div>
@@ -40,12 +40,14 @@
 </template>
 
 <script type="text/ecmascript-6">
-	import {mapGetters, mapMutations, mapActions} from 'vuex'
+	import {mapMutations, mapActions} from 'vuex'
 	import Scroll from 'base/scroll/scroll'
 	import Confirm from 'base/confirm/confirm'
 	import {playMode} from 'common/js/config'
+	import {playerMixin} from 'common/js/mixin'
 
 	export default {
+		mixins: [playerMixin],
 		data() {
 			return {
 				showFlag: false
@@ -108,9 +110,13 @@
 				'deleteSongList'
 			]),
 			...mapMutations({
-				setCurrentIndex: 'SET_CURRENT_INDEX',
-				setPlayingState: 'SET_PLAYING_STATE'
+				setCurrentIndex: 'SET_CURRENT_INDEX'
 			})
+		},
+		computed: {
+			modeText() {
+				return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.loop ? '单曲播放' : '随机播放'
+			}
 		},
 		watch: {
 			currentSong(newSong, oldSong) {
@@ -120,14 +126,6 @@
 				}
 				this.scrollToCurrent(newSong)
 			}
-		},
-		computed: {
-			...mapGetters([
-				'sequenceList',
-				'currentSong', //当前歌曲
-				'playlist',
-				'mode'
-			])
 		},
 		components: {
 			Scroll,
