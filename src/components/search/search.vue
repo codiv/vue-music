@@ -44,14 +44,13 @@
 	import {getHotKey} from 'api/search'
 	import {ERR_OK} from 'api/config'
 	import {mapActions, mapGetters} from 'vuex'
-	import {playlistMixin} from 'common/js/mixin'
+	import {playlistMixin, searchMixin} from 'common/js/mixin'
 
 	export default {
-		mixins: [playlistMixin],
+		mixins: [playlistMixin, searchMixin],
 		data() {
 			return {
-				hotKey: [],
-				query: ''
+				hotKey: []
 			}
 		},
 		created() {
@@ -60,15 +59,6 @@
 		methods: {
 			addQuery(query) {
 				this.$refs.searchBox.setQuery(query)
-			},
-			onQueryChange(query) {
-				this.query = query
-			},
-			blurInput() {
-				this.$refs.searchBox.blur()
-			},
-			saveSearch() {
-				this.saveSearchHistory(this.query) //把搜索框的值进行储存
 			},
 			showConfirm() {
 				this.$refs.confirm.show()
@@ -90,7 +80,6 @@
 				})
 			},
 			...mapActions([
-				'saveSearchHistory',
 				'deleteSearchHistory',
 				'clearSearchHistory'
 			])
