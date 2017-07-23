@@ -15,7 +15,7 @@
 				<div class="list-wrapper">
 					<scroll ref="songList" v-if="currentIndex===0" class="list-scroll" :loadData="playHistory">
 						<div class="list-inner">
-							<song-list :songs="playHistory"></song-list>
+							<song-list :songs="playHistory" @select="selectSong"></song-list>
 						</div>
 					</scroll>
 					<scroll ref="searchList" v-if="currentIndex===1" class="list-scroll" :loadData="searchHistory">
@@ -42,7 +42,8 @@
 	import Switches from 'base/switches/switches'
 	import Suggest from 'components/suggest/suggest'
 	import {searchMixin} from 'common/js/mixin'
-	import {mapGetters} from 'vuex'
+	import {mapGetters, mapActions} from 'vuex'
+	import Song from 'common/js/songs'
 
 	export default {
 		mixins: [searchMixin],
@@ -73,7 +74,21 @@
 			},
 			switchItem(index) {
 				this.currentIndex = index
-			}
+			},
+			selectSong(song, index) {
+				/*
+				* song：是一个对象，不是song的实例
+				*所以用new Song(）转换一下变成一个实例
+				* console.log(song)
+				* console.log(new Song(song))
+				* */
+				if (index !== 0) {
+					this.insertSong(new Song(song))
+				}
+			},
+			...mapActions([
+				'insertSong'
+			])
 		},
 		computed: {
 			...mapGetters([
