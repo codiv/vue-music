@@ -28,10 +28,6 @@
 				type: Array,
 				default: null
 			},
-			refreshDelay: { //监测loadData数据是否发生变化
-				type: Number,
-				default: 20
-			},
 			listenScroll: { //是否要监听滚动事件
 				type: Boolean,
 				default: false
@@ -43,6 +39,10 @@
 			beforeScroll: { //滚动开始之前
 				type: Boolean,
 				default: false
+			},
+			refreshDelay: { //refresh()执行的延迟时间
+				type: Number,
+				default: 20
 			}
 		},
 		mounted() {

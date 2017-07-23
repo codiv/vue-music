@@ -9,7 +9,7 @@
 						<span class="clear" @click="showConfirm"><i class="icon-clear"></i></span>
 					</h1>
 				</div>
-				<scroll class="list-content" :loadData="sequenceList" ref="listContent">
+				<scroll class="list-content" :loadData="sequenceList" ref="listContent" :refreshDelay="refreshDelay">
 					<transition-group name="list" tag="ul">
 						<li :key="item.id" class="item" ref="listItem" v-for="(item,index) in sequenceList"
 							@click="selectItem(item,index)">
@@ -52,7 +52,8 @@
 		mixins: [playerMixin],
 		data() {
 			return {
-				showFlag: false
+				showFlag: false,
+				refreshDelay: 120 //refresh()执行的延迟时间
 			}
 		},
 		methods: {
