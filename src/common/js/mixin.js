@@ -76,6 +76,9 @@ export const searchMixin = {
         }
     },
     methods: {
+        addQuery(query) {
+            this.$refs.searchBox.setQuery(query)
+        },
         onQueryChange(query) {
             this.query = query
         },
@@ -87,7 +90,13 @@ export const searchMixin = {
             this.saveSearchHistory(this.query) //把搜索框的值进行储存
         },
         ...mapActions([
+            'deleteSearchHistory',
             'saveSearchHistory'
+        ])
+    },
+    computed: {
+        ...mapGetters([
+            'searchHistory'
         ])
     }
 }

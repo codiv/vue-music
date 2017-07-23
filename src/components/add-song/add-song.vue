@@ -12,6 +12,19 @@
 			</div>
 			<div class="shortcut" v-show="!query">
 				<switches :currentIndex="currentIndex" :switches="switches" @switch="switchItem"></switches>
+				<div class="list-wrapper">
+					<scroll ref="songList" v-if="currentIndex===0">
+						<div class="list-inner">
+							codiv
+						</div>
+					</scroll>
+					<scroll ref="searchList" v-if="currentIndex===1" class="list-scroll">
+						<div class="list-inner">
+							<search-list :searches="searchHistory" @select="addQuery"
+										 @delete="deleteSearchHistory"></search-list>
+						</div>
+					</scroll>
+				</div>
 			</div>
 			<div class="search-result" v-show="query">
 				<suggest :query="query" @listScroll="blurInput" @select="saveSearch" ref="suggest"
@@ -23,6 +36,8 @@
 
 <script type="text/ecmascript-6">
 	import SearchBox from 'base/search-box/search-box'
+	import SearchList from 'base/search-list/search-list'
+	import Scroll from 'base/scroll/scroll'
 	import Switches from 'base/switches/switches'
 	import Suggest from 'components/suggest/suggest'
 	import {searchMixin} from 'common/js/mixin'
@@ -54,7 +69,9 @@
 		components: {
 			SearchBox,
 			Suggest,
-			Switches
+			Switches,
+			SearchList,
+			Scroll
 		}
 	}
 </script>
