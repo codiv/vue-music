@@ -27,9 +27,15 @@
 				</div>
 			</div>
 			<div class="search-result" v-show="query">
-				<suggest :query="query" @listScroll="blurInput" @select="saveSearch" ref="suggest"
+				<suggest :query="query" @listScroll="blurInput" @select="selectSuggest" ref="suggest"
 						 :showSinger="showSinger"></suggest>
 			</div>
+			<top-tip ref="topTip">
+				<div class="tip-title">
+					<i class="icon-ok"></i>
+					<span class="text">1首歌曲已经添加到播放列表</span>
+				</div>
+			</top-tip>
 		</div>
 	</transition>
 </template>
@@ -39,6 +45,7 @@
 	import SearchList from 'base/search-list/search-list'
 	import SongList from 'base/song-list/song-list'
 	import Scroll from 'base/scroll/scroll'
+	import TopTip from 'base/top-tip/top-tip'
 	import Switches from 'base/switches/switches'
 	import Suggest from 'components/suggest/suggest'
 	import {searchMixin} from 'common/js/mixin'
@@ -75,15 +82,20 @@
 			switchItem(index) {
 				this.currentIndex = index
 			},
+			selectSuggest() {
+				this.$refs.topTip.show()
+				this.saveSearch()
+			},
 			selectSong(song, index) {
 				/*
-				* song：是一个对象，不是song的实例
-				*所以用new Song(）转换一下变成一个实例
-				* console.log(song)
-				* console.log(new Song(song))
-				* */
+				 * song：是一个对象，不是song的实例
+				 *所以用new Song(）转换一下变成一个实例
+				 * console.log(song)
+				 * console.log(new Song(song))
+				 * */
 				if (index !== 0) {
 					this.insertSong(new Song(song))
+					this.$refs.topTip.show()
 				}
 			},
 			...mapActions([
@@ -101,7 +113,8 @@
 			Switches,
 			SearchList,
 			Scroll,
-			SongList
+			SongList,
+			TopTip
 		}
 	}
 </script>
