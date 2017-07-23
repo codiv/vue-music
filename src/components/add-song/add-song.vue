@@ -13,12 +13,12 @@
 			<div class="shortcut" v-show="!query">
 				<switches :currentIndex="currentIndex" :switches="switches" @switch="switchItem"></switches>
 				<div class="list-wrapper">
-					<scroll ref="songList" v-if="currentIndex===0">
+					<scroll ref="songList" v-if="currentIndex===0" class="list-scroll" :loadData="playHistory">
 						<div class="list-inner">
-							codiv
+							<song-list :songs="playHistory"></song-list>
 						</div>
 					</scroll>
-					<scroll ref="searchList" v-if="currentIndex===1" class="list-scroll">
+					<scroll ref="searchList" v-if="currentIndex===1" class="list-scroll" :loadData="searchHistory">
 						<div class="list-inner">
 							<search-list :searches="searchHistory" @select="addQuery"
 										 @delete="deleteSearchHistory"></search-list>
@@ -37,10 +37,12 @@
 <script type="text/ecmascript-6">
 	import SearchBox from 'base/search-box/search-box'
 	import SearchList from 'base/search-list/search-list'
+	import SongList from 'base/song-list/song-list'
 	import Scroll from 'base/scroll/scroll'
 	import Switches from 'base/switches/switches'
 	import Suggest from 'components/suggest/suggest'
 	import {searchMixin} from 'common/js/mixin'
+	import {mapGetters} from 'vuex'
 
 	export default {
 		mixins: [searchMixin],
@@ -66,12 +68,18 @@
 				this.currentIndex = index
 			}
 		},
+		computed: {
+			...mapGetters([
+				'playHistory'
+			])
+		},
 		components: {
 			SearchBox,
 			Suggest,
 			Switches,
 			SearchList,
-			Scroll
+			Scroll,
+			SongList
 		}
 	}
 </script>
