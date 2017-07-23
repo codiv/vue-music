@@ -60,6 +60,13 @@
 		methods: {
 			show() {
 				this.showFlag = true
+				setTimeout(() => {
+					if (this.currentIndex === 0) {
+						this.$refs.songList.refresh()
+					} else {
+						this.$refs.searchList.refresh()
+					}
+				}, 20)
 			},
 			hide() {
 				this.showFlag = false
