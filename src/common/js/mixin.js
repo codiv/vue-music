@@ -38,10 +38,29 @@ export const playerMixin = {
             'sequenceList', //歌曲列表（随机、顺序、单曲）
             'currentSong', //当前歌曲
             'playlist', //播放列表
-            'mode' //播放模式
+            'mode', //播放模式
+            'favoriteList' //收藏歌曲
         ])
     },
     methods: {
+        getFavoriteIcon(song) {
+            if (this.isFavorite(song)) {
+                return 'icon-favorite'
+            }
+            return 'icon-not-favorite'
+        },
+        toggleFavorite(song) {
+            if (this.isFavorite(song)) {
+                this.deleteFavoriteList(song)
+            }
+            this.saveFavoriteList(song)
+        },
+        isFavorite(song) {
+            const index = this.favoriteList.findIndex((item) => {
+                return item.id === song.id
+            })
+            return index > -1
+        },
         changeMode() {
             const mode = (this.mode + 1) % 3 //3取余
             this.setPlayMode(mode)
@@ -65,7 +84,11 @@ export const playerMixin = {
             setPlayMode: 'SET_PLAY_MODE',
             setPlayList: 'SET_PLAYLIST',
             setPlayingState: 'SET_PLAYING_STATE'
-        })
+        }),
+        ...mapActions([
+            'saveFavoriteList',
+            'deleteFavoriteList'
+        ])
     }
 }
 
