@@ -7,12 +7,31 @@
 			<div class="switches-wrapper">
 				<switches :switches="switches" @switch="switchItem" :currentIndex="currentIndex"></switches>
 			</div>
+			<div class="play-btn">
+				<i class="icon-play"></i>
+				<span class="text">随机播放全部</span>
+			</div>
+			<div class="list-wrapper">
+				<scroll ref="favoriteList" :loadData="favoriteList" class="list-scroll" v-if="currentIndex===0">
+					<div class="list-inner">
+						<song-list :songs="favoriteList"></song-list>
+					</div>
+				</scroll>
+				<scroll ref="playList" :loadData="playHistory" class="list-scroll" v-if="currentIndex===1">
+					<div class="list-inner">
+						<song-list :songs="playHistory"></song-list>
+					</div>
+				</scroll>
+			</div>
 		</div>
 	</transition>
 </template>
 
 <script type="text/ecmascript-6">
 	import Switches from 'base/switches/switches'
+	import Scroll from 'base/scroll/scroll'
+	import SongList from 'base/song-list/song-list'
+	import {mapGetters} from 'vuex'
 
 	export default {
 		data() {
@@ -36,8 +55,16 @@
 				this.currentIndex = index
 			}
 		},
+		computed: {
+			...mapGetters([
+				'favoriteList',
+				'playHistory'
+			])
+		},
 		components: {
-			Switches
+			Switches,
+			Scroll,
+			SongList
 		}
 	}
 </script>
