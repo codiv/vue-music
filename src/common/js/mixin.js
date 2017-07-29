@@ -52,8 +52,9 @@ export const playerMixin = {
         toggleFavorite(song) {
             if (this.isFavorite(song)) {
                 this.deleteFavoriteList(song)
+            } else {
+                this.saveFavoriteList(song)
             }
-            this.saveFavoriteList(song)
         },
         isFavorite(song) {
             const index = this.favoriteList.findIndex((item) => {
