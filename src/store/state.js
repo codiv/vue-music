@@ -2,7 +2,7 @@
  * 状态管理，时时更新状态
  */
 import {playMode} from 'common/js/config'
-import {loadSearch, loadPlay} from 'common/js/cache'
+import {loadSearch, loadPlay, loadFavorite} from 'common/js/cache'
 
 const state = {
     singer: {},
@@ -15,6 +15,7 @@ const state = {
     disc: {},
     toplist: {},
     searchHistory: loadSearch(), //搜索历史
-    playHistory: loadPlay() //播放历史列表
+    playHistory: loadPlay(), //播放历史列表
+    favoriteList: loadFavorite() //收藏歌曲
 }
 export default state

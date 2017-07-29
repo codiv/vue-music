@@ -36,6 +36,9 @@ const matutation = {
     },
     [types.SET_PLAY_HISTORY](state, history) {
         state.playHistory = history
+    },
+    [types.SET_FAVORITE_LIST](state, history) {
+        state.favoriteList = history
     }
 }
 

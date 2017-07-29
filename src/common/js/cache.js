@@ -9,6 +9,9 @@ const SEARCH_MAX_LEN = 15 //最大储存条数
 const PLAY_KEY = '__play__' //播放历史
 const PLAY_MAX_LEN = 200
 
+const FAVORITE_KEY = '__favorite__' //歌曲收藏
+const FAVORITE_MAX_LEN = 200
+
 /*
  * insertArray（）方法：
  * 如果数组超过最大条数，则删除最后一条数据
@@ -88,4 +91,29 @@ export function savePlay(song) {
 
 export function loadPlay() {
     return storage.get(PLAY_KEY, [])
+}
+
+//保存收藏歌曲
+export function saveFavorite(song) {
+    let songs = storage.get(FAVORITE_KEY, [])
+    insertArray(songs, song, (item) => {
+        return item.id === song.id
+    }, FAVORITE_MAX_LEN)
+    storage.set(FAVORITE_KEY, songs)
+    return songs
+}
+
+//删除收藏歌曲
+export function deleteFavorite(song) {
+    let songs = storage.get(FAVORITE_KEY, [])
+    deleteFromArray(songs, (item) => {
+        return item.id === song.id
+    })
+    storage.set(FAVORITE_KEY, songs)
+    return songs
+}
+
+//获取收藏歌曲
+export function loadFavorite() {
+    return storage.get(FAVORITE_KEY, [])
 }
