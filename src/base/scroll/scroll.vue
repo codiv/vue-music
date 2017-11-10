@@ -3,6 +3,8 @@
 1.必须两层：一个外层包裹着一个内层，以div为例
 2.外层div：样式设置为position: fixed
 3.内层div：必须设置width、height、overflow: hidden
+经验：
+外层div样式里不能用box-sizing: border-box属性，不然计算的高不对
 -->
 <template>
 	<div ref="wrapper">

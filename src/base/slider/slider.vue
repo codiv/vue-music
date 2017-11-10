@@ -38,7 +38,6 @@
 		mounted() {
 			setTimeout(() => {
 				this._setSliderWidth()
-
 				this._initDots() //注：必须在_initSlider()方法之前执行，如果在之后并且snapLoop为true时候，children的值会多出两个
 				this._initSlider()
 				if (this.autoPlay) {
